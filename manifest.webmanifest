@@ -1,0 +1,40 @@
+{
+  "name": "魔法小皇宮",
+  "short_name": "小皇宮",
+  "description": "給小朋友的迪士尼風小遊戲：公主換裝、記憶配對、關係配對。",
+  "lang": "zh-Hant",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#ffe6f3",
+  "theme_color": "#ff7ac0",
+  "categories": ["games", "education", "kids"],
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

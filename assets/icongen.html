@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+      svg {
+        display: block;
+        width: 100vw;
+        height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 用 #maskable 載入會把城堡縮小到安全區（用於 maskable 圖示） -->
+    <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#ff9ec7" />
+          <stop offset="0.5" stop-color="#b18cff" />
+          <stop offset="1" stop-color="#7cc6ff" />
+        </linearGradient>
+        <linearGradient id="roof" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#ffd76a" />
+          <stop offset="1" stop-color="#f2a93f" />
+        </linearGradient>
+      </defs>
+      <rect width="512" height="512" fill="url(#bg)" />
+      <!-- 星星裝飾 -->
+      <g fill="#ffffff">
+        <path d="M110 120 l7 18 18 7 -18 7 -7 18 -7 -18 -18 -7 18 -7z" opacity="0.95" />
+        <path d="M406 150 l5 13 13 5 -13 5 -5 13 -5 -13 -13 -5 13 -5z" opacity="0.85" />
+        <circle cx="384" cy="92" r="5" />
+        <circle cx="138" cy="372" r="4" />
+        <circle cx="430" cy="350" r="6" />
+      </g>
+      <g id="castle">
+        <!-- 雲朵底座 -->
+        <ellipse cx="256" cy="394" rx="152" ry="30" fill="#ffffff" opacity="0.92" />
+        <!-- 左塔 -->
+        <rect x="156" y="256" width="56" height="114" rx="4" fill="#fff7ef" />
+        <path d="M150 258 L218 258 L184 196 Z" fill="url(#roof)" />
+        <circle cx="184" cy="302" r="9" fill="#ffd76a" />
+        <!-- 右塔 -->
+        <rect x="300" y="256" width="56" height="114" rx="4" fill="#fff7ef" />
+        <path d="M294 258 L362 258 L328 196 Z" fill="url(#roof)" />
+        <circle cx="328" cy="302" r="9" fill="#ffd76a" />
+        <!-- 中央主塔 -->
+        <rect x="210" y="220" width="92" height="150" rx="4" fill="#fffaf3" />
+        <path d="M203 222 L309 222 L256 148 Z" fill="url(#roof)" />
+        <circle cx="256" cy="250" r="11" fill="#ffd76a" />
+        <!-- 城門 -->
+        <path d="M232 370 L232 314 a24 24 0 0 1 48 0 L280 370 Z" fill="#9b6dff" />
+        <circle cx="270" cy="340" r="3.2" fill="#ffe7a8" />
+        <!-- 旗子 -->
+        <rect x="253" y="116" width="5" height="36" rx="2" fill="#fff7ef" />
+        <path d="M258 121 L288 130 L258 139 Z" fill="#ff5fa9" />
+        <!-- 愛心 -->
+        <path
+          d="M256 408 c-7 -8 -22 -3 -22 9 c0 9 12 16 22 22 c10 -6 22 -13 22 -22 c0 -12 -15 -17 -22 -9 z"
+          fill="#ff5fa9"
+          opacity="0.9"
+        />
+      </g>
+    </svg>
+    <script>
+      if (location.hash.indexOf("maskable") >= 0) {
+        document
+          .getElementById("castle")
+          .setAttribute(
+            "transform",
+            "translate(256,256) scale(0.76) translate(-256,-256)"
+          );
+      }
+    </script>
+  </body>
+</html>

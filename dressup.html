@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>公主換裝 · 魔法小皇宮</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="theme-color" content="#ff7ac0" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="魔法小皇宮" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👗</text></svg>"
+    />
+    <style>
+      .du-layout {
+        display: flex;
+        gap: 20px;
+        align-items: stretch;
+      }
+      @media (max-width: 860px) {
+        .du-layout {
+          flex-direction: column;
+        }
+      }
+      .stage {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(180deg, #fff6fb 0%, #f3ecff 100%);
+        padding: 10px;
+      }
+      #doll {
+        width: 100%;
+        max-width: 380px;
+        height: auto;
+        border-radius: 18px;
+        overflow: hidden;
+      }
+      #doll.bounce {
+        animation: doll-bounce 0.4s ease;
+      }
+      @keyframes doll-bounce {
+        0%,
+        100% {
+          transform: translateY(0) scale(1);
+        }
+        40% {
+          transform: translateY(-8px) scale(1.02);
+        }
+      }
+      .wardrobe {
+        width: 360px;
+        max-width: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      @media (max-width: 860px) {
+        .wardrobe {
+          width: 100%;
+        }
+      }
+      .tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+      .tab {
+        font-family: var(--font-cute);
+        font-weight: 800;
+        font-size: 15px;
+        border: none;
+        border-radius: 14px;
+        padding: 9px 12px;
+        background: rgba(255, 255, 255, 0.7);
+        color: var(--ink);
+        cursor: pointer;
+        box-shadow: 0 3px 0 rgba(0, 0, 0, 0.07);
+        transition: transform 0.08s;
+      }
+      .tab.active {
+        background: linear-gradient(180deg, var(--pink) 0%, var(--pink-deep) 100%);
+        color: #fff;
+      }
+      .tab:active {
+        transform: translateY(2px);
+      }
+      .options {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        overflow-y: auto;
+        align-content: start;
+        flex: 1;
+        max-height: 420px;
+        padding: 2px;
+      }
+      .opt {
+        background: #fff;
+        border: 3px solid transparent;
+        border-radius: 16px;
+        padding: 8px 4px;
+        cursor: pointer;
+        text-align: center;
+        transition: transform 0.1s, border-color 0.1s;
+        box-shadow: 0 3px 8px rgba(90, 61, 107, 0.12);
+      }
+      .opt:hover {
+        transform: translateY(-3px);
+      }
+      .opt.sel {
+        border-color: var(--pink-deep);
+        background: #fff0f7;
+      }
+      .opt .swatch {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        margin: 2px auto 6px;
+        box-shadow: inset 0 -3px 6px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+      }
+      .opt .nm {
+        font-size: 13px;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+      .toolbar {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+        align-items: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="topbar">
+        <a class="btn ghost btn-back" href="index.html">🏰 回城堡</a>
+        <h1>👗 公主換裝</h1>
+        <span id="sound-slot"></span>
+      </div>
+
+      <div class="toolbar">
+        <button class="btn purple" id="btn-random">🎲 隨機造型</button>
+        <button class="btn ghost" id="btn-reset">♻️ 重新開始</button>
+        <button class="btn gold" id="btn-photo">📸 拍照儲存</button>
+        <span class="badge" style="margin-left: auto">幫小公主打扮吧 💕</span>
+      </div>
+
+      <div class="du-layout">
+        <div class="stage panel">
+          <svg id="doll" viewBox="0 0 360 520" style="--skin: #ffe0bd">
+            <defs>
+              <style>
+                .skin {
+                  fill: var(--skin);
+                }
+                .skin-stroke {
+                  stroke: var(--skin);
+                  fill: none;
+                }
+              </style>
+            </defs>
+
+            <!-- 場景背景 -->
+            <g id="scene"></g>
+            <!-- 後方頭髮 -->
+            <g id="backhair"></g>
+
+            <!-- 身體（固定，膚色可換） -->
+            <g id="body">
+              <!-- 腿 -->
+              <path
+                class="skin-stroke"
+                d="M164 322 L162 486"
+                stroke-width="24"
+                stroke-linecap="round"
+              />
+              <path
+                class="skin-stroke"
+                d="M196 322 L198 486"
+                stroke-width="24"
+                stroke-linecap="round"
+              />
+              <!-- 軀幹 -->
+              <path class="skin" d="M150 200 Q180 192 210 200 L208 322 L152 322 Z" />
+              <!-- 手臂 -->
+              <path
+                class="skin-stroke"
+                d="M150 208 Q140 270 146 330"
+                stroke-width="20"
+                stroke-linecap="round"
+              />
+              <path
+                class="skin-stroke"
+                d="M210 208 Q220 270 214 330"
+                stroke-width="20"
+                stroke-linecap="round"
+              />
+              <circle class="skin" cx="146" cy="332" r="12" />
+              <circle class="skin" cx="214" cy="332" r="12" />
+              <!-- 脖子 -->
+              <rect class="skin" x="168" y="176" width="24" height="28" rx="8" />
+              <!-- 耳朵 -->
+              <circle class="skin" cx="114" cy="126" r="13" />
+              <circle class="skin" cx="246" cy="126" r="13" />
+              <!-- 頭 -->
+              <circle class="skin" cx="180" cy="120" r="70" />
+              <!-- 臉 -->
+              <g id="face">
+                <!-- 眉毛 -->
+                <path
+                  d="M148 98 Q160 92 172 96"
+                  stroke="#9a6a44"
+                  stroke-width="3"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M188 96 Q200 92 212 98"
+                  stroke="#9a6a44"
+                  stroke-width="3"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <!-- 左眼 -->
+                <ellipse cx="160" cy="122" rx="14" ry="18" fill="#fff" />
+                <circle cx="160" cy="123" r="11" fill="#8a5a2e" />
+                <circle cx="160" cy="124" r="5.5" fill="#2a1a12" />
+                <circle cx="156" cy="118" r="4" fill="#fff" />
+                <path
+                  d="M146 116 Q160 100 174 116"
+                  stroke="#2a1a12"
+                  stroke-width="3"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <!-- 右眼 -->
+                <ellipse cx="200" cy="122" rx="14" ry="18" fill="#fff" />
+                <circle cx="200" cy="123" r="11" fill="#8a5a2e" />
+                <circle cx="200" cy="124" r="5.5" fill="#2a1a12" />
+                <circle cx="196" cy="118" r="4" fill="#fff" />
+                <path
+                  d="M186 116 Q200 100 214 116"
+                  stroke="#2a1a12"
+                  stroke-width="3"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <!-- 鼻 -->
+                <path
+                  d="M177 136 Q180 142 184 139"
+                  stroke="#d9a77a"
+                  stroke-width="2.5"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <!-- 嘴 -->
+                <path
+                  d="M169 153 Q180 167 191 153"
+                  stroke="#d75c76"
+                  stroke-width="3.5"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <path d="M174 158 Q180 163 186 158 Q180 161 174 158 Z" fill="#ff9bb0" />
+                <!-- 腮紅 -->
+                <ellipse cx="148" cy="146" rx="11" ry="7" fill="#ff9bc0" opacity="0.55" />
+                <ellipse cx="212" cy="146" rx="11" ry="7" fill="#ff9bc0" opacity="0.55" />
+              </g>
+            </g>
+
+            <!-- 禮服 -->
+            <g id="dress"></g>
+            <!-- 鞋子 -->
+            <g id="shoes"></g>
+            <!-- 前方瀏海 -->
+            <g id="fronthair"></g>
+            <!-- 皇冠 / 頭飾 -->
+            <g id="crown"></g>
+          </svg>
+        </div>
+
+        <div class="wardrobe panel">
+          <div class="tabs" id="tabs"></div>
+          <div class="options" id="options"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/common.js"></script>
+    <script src="js/dressup.js"></script>
+  </body>
+</html>

@@ -1,0 +1,373 @@
+/* ============================================================
+   魔法小皇宮 — 共用主題樣式
+   Magic Little Palace — shared theme
+   ============================================================ */
+
+:root {
+  --font-cute: "Microsoft JhengHei", "微軟正黑體", "PingFang TC",
+    "Noto Sans TC", "Segoe UI", system-ui, sans-serif;
+  --pink: #ff8fc7;
+  --pink-deep: #ff5fa9;
+  --purple: #9b6dff;
+  --gold: #ffcf4d;
+  --gold-deep: #f2a900;
+  --ice: #8fd4ff;
+  --ice-deep: #4aa3e0;
+  --green: #7bd88f;
+  --cream: #fff7ec;
+  --ink: #5a3d6b;
+  --shadow: 0 10px 30px rgba(90, 61, 107, 0.25);
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  font-family: var(--font-cute);
+  color: var(--ink);
+  overflow-x: hidden;
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #ffd9ef 0%, #d4e9ff 45%, #c8f3ff 100%);
+  position: relative;
+  user-select: none;
+}
+
+/* ---- 飄動的雲與星星背景 ---- */
+.sky-decor {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.cloud {
+  position: absolute;
+  background: #fff;
+  border-radius: 50%;
+  opacity: 0.85;
+  filter: blur(1px);
+  animation: drift linear infinite;
+}
+.cloud::before,
+.cloud::after {
+  content: "";
+  position: absolute;
+  background: #fff;
+  border-radius: 50%;
+}
+.cloud::before {
+  width: 60%;
+  height: 90%;
+  top: -35%;
+  left: 12%;
+}
+.cloud::after {
+  width: 45%;
+  height: 75%;
+  top: -20%;
+  right: 12%;
+}
+@keyframes drift {
+  from {
+    transform: translateX(-25vw);
+  }
+  to {
+    transform: translateX(125vw);
+  }
+}
+.twinkle {
+  position: absolute;
+  color: #fff;
+  font-size: 18px;
+  animation: twinkle 2.4s ease-in-out infinite;
+}
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(0.7);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+/* ---- 通用容器 ---- */
+.wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 18px 18px 60px;
+}
+
+/* ---- 頂部列 ---- */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.topbar h1 {
+  margin: 0;
+  font-size: clamp(22px, 4vw, 36px);
+  flex: 1;
+}
+.topbar .spacer {
+  flex: 1;
+}
+
+/* ---- 圓潤按鈕 ---- */
+.btn {
+  font-family: var(--font-cute);
+  font-weight: 800;
+  font-size: 18px;
+  color: #fff;
+  background: linear-gradient(180deg, var(--pink) 0%, var(--pink-deep) 100%);
+  border: none;
+  border-radius: 999px;
+  padding: 12px 22px;
+  cursor: pointer;
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.12), var(--shadow);
+  transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn:hover {
+  filter: brightness(1.05);
+}
+.btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.12), var(--shadow);
+}
+.btn.purple {
+  background: linear-gradient(180deg, #b794ff 0%, var(--purple) 100%);
+}
+.btn.ice {
+  background: linear-gradient(180deg, #aee3ff 0%, var(--ice-deep) 100%);
+}
+.btn.gold {
+  background: linear-gradient(180deg, var(--gold) 0%, var(--gold-deep) 100%);
+  color: #7a4d00;
+}
+.btn.green {
+  background: linear-gradient(180deg, #a6ecb4 0%, #3fbf5d 100%);
+}
+.btn.ghost {
+  background: rgba(255, 255, 255, 0.75);
+  color: var(--ink);
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.08), var(--shadow);
+}
+.btn-back {
+  font-size: 16px;
+  padding: 10px 18px;
+}
+
+/* ---- 卡片面板 ---- */
+.panel {
+  background: rgba(255, 255, 255, 0.78);
+  border-radius: 26px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(4px);
+}
+
+/* ---- 標題裝飾 ---- */
+.title-fancy {
+  text-align: center;
+  font-size: clamp(30px, 7vw, 64px);
+  margin: 6px 0 2px;
+  background: linear-gradient(90deg, #ff7ac0, #ffb44d, #8f7bff, #5ec6ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 4px 10px rgba(255, 255, 255, 0.6);
+  letter-spacing: 2px;
+}
+.subtitle {
+  text-align: center;
+  font-size: clamp(14px, 2.5vw, 20px);
+  color: #8a6aa0;
+  margin: 0 0 10px;
+}
+
+/* ---- 彩帶 / 星星特效 ---- */
+.fx-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+}
+.confetti {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  will-change: transform, opacity;
+}
+@keyframes confetti-fall {
+  to {
+    transform: translateY(110vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+/* ---- 答錯搖晃 ---- */
+.shake {
+  animation: shake 0.5s ease;
+}
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-7px);
+  }
+  40%,
+  80% {
+    transform: translateX(7px);
+  }
+}
+
+.spark {
+  position: absolute;
+  font-size: 26px;
+  animation: spark-pop 0.7s ease-out forwards;
+}
+@keyframes spark-pop {
+  0% {
+    transform: scale(0.2) rotate(0deg);
+    opacity: 0;
+  }
+  40% {
+    transform: scale(1.3) rotate(20deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.6) rotate(-10deg) translateY(-30px);
+    opacity: 0;
+  }
+}
+
+/* ---- 慶祝彈窗 ---- */
+.modal-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(70, 40, 90, 0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(3px);
+}
+.modal-mask.show {
+  display: flex;
+  animation: fade-in 0.3s ease;
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.modal {
+  background: #fff;
+  border-radius: 30px;
+  padding: 32px 34px;
+  text-align: center;
+  max-width: 90vw;
+  width: 420px;
+  box-shadow: var(--shadow);
+  animation: pop-in 0.4s cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+@keyframes pop-in {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.modal h2 {
+  font-size: 32px;
+  margin: 6px 0 4px;
+  color: var(--pink-deep);
+}
+.modal p {
+  font-size: 18px;
+  color: #8a6aa0;
+  margin: 0 0 18px;
+}
+.modal .big-emoji {
+  font-size: 70px;
+  display: block;
+  animation: bounce 1s ease infinite;
+}
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ---- 音效開關 ---- */
+.sound-toggle {
+  font-size: 22px;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---- 浮動標籤 ---- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-weight: 800;
+  font-size: 16px;
+  box-shadow: var(--shadow);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001s !important;
+  }
+}

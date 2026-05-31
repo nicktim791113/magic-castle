@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>記憶配對 · 魔法小皇宮</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="theme-color" content="#ff7ac0" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="魔法小皇宮" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❄️</text></svg>"
+    />
+    <style>
+      body {
+        background: linear-gradient(180deg, #d8f3ff 0%, #b9e0ff 55%, #cfeaff 100%);
+      }
+      .controls {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 14px;
+      }
+      .seg {
+        display: inline-flex;
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 14px;
+        padding: 4px;
+        gap: 4px;
+        box-shadow: var(--shadow);
+      }
+      .seg button {
+        font-family: var(--font-cute);
+        font-weight: 800;
+        font-size: 15px;
+        border: none;
+        background: transparent;
+        color: var(--ink);
+        padding: 8px 14px;
+        border-radius: 11px;
+        cursor: pointer;
+      }
+      .seg button.on {
+        background: linear-gradient(180deg, #aee3ff, var(--ice-deep));
+        color: #fff;
+      }
+      .stats {
+        display: flex;
+        gap: 10px;
+        margin-left: auto;
+      }
+      .board {
+        display: grid;
+        gap: 12px;
+        max-width: 620px;
+        margin: 0 auto;
+      }
+      .card {
+        aspect-ratio: 3 / 4;
+        perspective: 700px;
+        border: none;
+        background: transparent;
+        padding: 0;
+        cursor: pointer;
+      }
+      .card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transform-style: preserve-3d;
+        transition: transform 0.4s cubic-bezier(0.3, 1.1, 0.4, 1);
+      }
+      .card.flipped .card-inner {
+        transform: rotateY(180deg);
+      }
+      .card-face {
+        position: absolute;
+        inset: 0;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 16px;
+        box-shadow: 0 6px 14px rgba(40, 80, 120, 0.25);
+      }
+      .card-back {
+        background: linear-gradient(150deg, #7fc4f0 0%, #4a93d6 100%);
+        font-size: clamp(26px, 7vw, 44px);
+        color: #fff;
+      }
+      .card-front {
+        background: #fff;
+        transform: rotateY(180deg);
+        font-size: clamp(30px, 9vw, 56px);
+      }
+      .card.sel .card-front,
+      .card.sel .card-back {
+        outline: 4px solid var(--gold);
+        outline-offset: -4px;
+      }
+      .card.matched {
+        animation: matched-pop 0.5s ease forwards;
+        pointer-events: none;
+      }
+      @keyframes matched-pop {
+        0% {
+          transform: scale(1);
+        }
+        40% {
+          transform: scale(1.15);
+        }
+        100% {
+          transform: scale(0.6);
+          opacity: 0;
+        }
+      }
+      .hint {
+        text-align: center;
+        color: #4a7aa0;
+        font-weight: 700;
+        margin: 0 0 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="topbar">
+        <a class="btn ghost btn-back" href="index.html">🏰 回城堡</a>
+        <h1>❄️ 記憶配對</h1>
+        <span id="sound-slot"></span>
+      </div>
+
+      <div class="controls">
+        <div class="seg" id="mode-seg">
+          <button data-mode="memory" class="on">🧠 記憶模式</button>
+          <button data-mode="visual">👀 視覺模式</button>
+        </div>
+        <div class="seg" id="diff-seg">
+          <button data-diff="easy" class="on">簡單</button>
+          <button data-diff="medium">普通</button>
+          <button data-diff="hard">困難</button>
+        </div>
+        <button class="btn ice" id="btn-restart">🔄 重新開始</button>
+        <div class="stats">
+          <span class="badge">🎯 <span id="moves">0</span> 步</span>
+          <span class="badge">⏱️ <span id="time">00:00</span></span>
+        </div>
+      </div>
+
+      <p class="hint" id="hint">翻開兩張一樣的卡片就能消除它們！</p>
+      <div class="board" id="board"></div>
+    </div>
+
+    <script src="js/common.js"></script>
+    <script src="js/memory.js"></script>
+  </body>
+</html>

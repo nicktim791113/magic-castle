@@ -1,0 +1,13 @@
+# OS / OneDrive
+Thumbs.db
+ehthumbs.db
+desktop.ini
+.DS_Store
+
+# 編輯器
+*.swp
+*~
+
+# 紀錄 / 暫存
+*.log
+*.tmp

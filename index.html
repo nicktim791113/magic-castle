@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>魔法小皇宮 ✨</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="theme-color" content="#ff7ac0" />
+    <meta
+      name="description"
+      content="魔法小皇宮：給小朋友的迪士尼風小遊戲 — 公主換裝、記憶配對、關係配對。"
+    />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="魔法小皇宮" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏰</text></svg>"
+    />
+    <style>
+      .hero {
+        text-align: center;
+        margin-top: 8px;
+      }
+      .castle-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 22px;
+        margin-top: 26px;
+      }
+      @media (max-width: 820px) {
+        .castle-grid {
+          grid-template-columns: 1fr;
+          max-width: 380px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+      }
+      .castle-card {
+        position: relative;
+        border-radius: 28px;
+        padding: 18px 16px 22px;
+        text-decoration: none;
+        color: var(--ink);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        transition: transform 0.18s cubic-bezier(0.2, 1.3, 0.4, 1),
+          box-shadow 0.18s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        cursor: pointer;
+      }
+      .castle-card:hover {
+        transform: translateY(-10px) scale(1.03);
+        box-shadow: 0 22px 44px rgba(90, 61, 107, 0.35);
+      }
+      .castle-card:active {
+        transform: translateY(-2px) scale(1);
+      }
+      .card-aladdin {
+        background: linear-gradient(180deg, #ffe7a8 0%, #ffd0e0 100%);
+      }
+      .card-frozen {
+        background: linear-gradient(180deg, #d8f3ff 0%, #b9e0ff 100%);
+      }
+      .card-snow {
+        background: linear-gradient(180deg, #d6f5d8 0%, #cfe8ff 100%);
+      }
+      .castle-card svg {
+        width: 100%;
+        height: auto;
+        display: block;
+        filter: drop-shadow(0 8px 6px rgba(0, 0, 0, 0.12));
+      }
+      .castle-card .game-name {
+        font-size: 24px;
+        font-weight: 900;
+        margin: 14px 0 2px;
+      }
+      .castle-card .game-region {
+        font-size: 15px;
+        opacity: 0.7;
+        font-weight: 700;
+      }
+      .castle-card .play-pill {
+        margin-top: 12px;
+        background: rgba(255, 255, 255, 0.85);
+        color: var(--pink-deep);
+        font-weight: 900;
+        padding: 8px 20px;
+        border-radius: 999px;
+        font-size: 17px;
+        box-shadow: 0 4px 0 rgba(0, 0, 0, 0.08);
+      }
+      .card-frozen .play-pill {
+        color: var(--ice-deep);
+      }
+      .card-snow .play-pill {
+        color: #3fa55a;
+      }
+      .ribbon {
+        position: absolute;
+        top: 14px;
+        right: -34px;
+        transform: rotate(40deg);
+        background: var(--pink-deep);
+        color: #fff;
+        font-weight: 800;
+        font-size: 13px;
+        padding: 4px 40px;
+        box-shadow: var(--shadow);
+      }
+      .footer-note {
+        text-align: center;
+        margin-top: 34px;
+        color: #8a6aa0;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="hero">
+        <h1 class="title-fancy">魔法小皇宮</h1>
+        <p class="subtitle">✨ 選一座城堡，開始你的魔法冒險吧！ ✨</p>
+      </div>
+
+      <div style="text-align: right">
+        <span id="sound-slot"></span>
+      </div>
+
+      <div class="castle-grid">
+        <!-- 阿拉丁：換裝 -->
+        <a class="castle-card card-aladdin" href="dressup.html">
+          <span class="ribbon">換裝</span>
+          <svg viewBox="0 0 200 200" aria-hidden="true">
+            <!-- 沙丘 -->
+            <ellipse cx="100" cy="185" rx="120" ry="22" fill="#f6c869" />
+            <!-- 主塔身 -->
+            <rect x="70" y="80" width="60" height="100" rx="6" fill="#f4b942" />
+            <rect x="40" y="110" width="34" height="70" rx="5" fill="#f0a830" />
+            <rect x="126" y="110" width="34" height="70" rx="5" fill="#f0a830" />
+            <!-- 洋蔥圓頂 -->
+            <path
+              d="M100 26 C124 50 124 74 100 80 C76 74 76 50 100 26 Z"
+              fill="#ffd95e"
+            />
+            <circle cx="100" cy="22" r="5" fill="#fff3b0" />
+            <path
+              d="M57 86 C72 102 72 118 57 122 C42 118 42 102 57 86 Z"
+              fill="#ffcf57"
+            />
+            <path
+              d="M143 86 C158 102 158 118 143 122 C128 118 128 102 143 86 Z"
+              fill="#ffcf57"
+            />
+            <!-- 門與窗 -->
+            <path d="M88 180 v-34 a12 12 0 0 1 24 0 v34 Z" fill="#9c5b1f" />
+            <circle cx="100" cy="108" r="8" fill="#fff3c4" />
+            <!-- 旗 -->
+            <rect x="99" y="6" width="2" height="16" fill="#b9772a" />
+            <path d="M101 8 l14 5 l-14 5 Z" fill="#ff7aa8" />
+          </svg>
+          <div class="game-name">公主換裝</div>
+          <div class="game-region">🕌 阿拉丁神燈宮殿</div>
+          <div class="play-pill">開始遊戲 ▶</div>
+        </a>
+
+        <!-- 冰雪：記憶配對 -->
+        <a class="castle-card card-frozen" href="memory.html">
+          <span class="ribbon" style="background: var(--ice-deep)">配對</span>
+          <svg viewBox="0 0 200 200" aria-hidden="true">
+            <ellipse cx="100" cy="185" rx="120" ry="22" fill="#eaf6ff" />
+            <!-- 冰晶塔 -->
+            <polygon points="100,18 116,70 84,70" fill="#bfe9ff" />
+            <rect x="84" y="70" width="32" height="110" fill="#d9f2ff" />
+            <polygon points="60,46 74,92 46,92" fill="#a9dcff" />
+            <rect x="46" y="92" width="28" height="88" fill="#cdebff" />
+            <polygon points="140,46 154,92 126,92" fill="#a9dcff" />
+            <rect x="126" y="92" width="28" height="88" fill="#cdebff" />
+            <!-- 門窗 -->
+            <path d="M90 180 v-30 a10 10 0 0 1 20 0 v30 Z" fill="#7fc1ee" />
+            <circle cx="100" cy="96" r="7" fill="#eafaff" />
+            <!-- 雪花 -->
+            <text x="100" y="14" font-size="14" text-anchor="middle">❄️</text>
+            <text x="34" y="60" font-size="12" text-anchor="middle">❄️</text>
+            <text x="168" y="60" font-size="12" text-anchor="middle">❄️</text>
+          </svg>
+          <div class="game-name">記憶配對</div>
+          <div class="game-region">❄️ 冰雪奇緣冰晶城堡</div>
+          <div class="play-pill">開始遊戲 ▶</div>
+        </a>
+
+        <!-- 白雪：關係配對 -->
+        <a class="castle-card card-snow" href="match.html">
+          <span class="ribbon" style="background: #3fa55a">連連看</span>
+          <svg viewBox="0 0 200 200" aria-hidden="true">
+            <ellipse cx="100" cy="186" rx="120" ry="20" fill="#bfe6a8" />
+            <!-- 城牆 -->
+            <rect x="56" y="120" width="88" height="60" fill="#e7e0d4" />
+            <rect x="72" y="70" width="56" height="110" fill="#f2ede3" />
+            <!-- 圓錐屋頂 -->
+            <polygon points="100,30 128,72 72,72" fill="#e0556b" />
+            <polygon points="56,96 76,124 36,124" fill="#5a8fd6" />
+            <rect x="36" y="124" width="40" height="56" fill="#efe9df" />
+            <polygon points="144,96 164,124 124,124" fill="#5a8fd6" />
+            <rect x="124" y="124" width="40" height="56" fill="#efe9df" />
+            <!-- 門窗 -->
+            <path d="M90 180 v-34 a10 10 0 0 1 20 0 v34 Z" fill="#8a5a33" />
+            <circle cx="100" cy="92" r="7" fill="#ffe9a8" />
+            <!-- 蘋果旗 -->
+            <rect x="99" y="14" width="2" height="16" fill="#7a5a33" />
+            <text x="108" y="22" font-size="13" text-anchor="middle">🍎</text>
+          </svg>
+          <div class="game-name">關係配對</div>
+          <div class="game-region">🍎 白雪公主古典城堡</div>
+          <div class="play-pill">開始遊戲 ▶</div>
+        </a>
+      </div>
+
+      <p class="footer-note">做給最可愛的小公主 💕 — 用滑鼠或手指點點看吧！</p>
+    </div>
+
+    <script src="js/common.js"></script>
+    <script>
+      MLP.buildSky({ clouds: 6, stars: 16 });
+      MLP.mountSoundToggle(document.getElementById("sound-slot"));
+      MLP.wireClickSounds();
+      // 進場時城堡依序彈跳
+      document.querySelectorAll(".castle-card").forEach(function (c, i) {
+        c.style.opacity = 0;
+        c.style.transform = "translateY(30px)";
+        setTimeout(function () {
+          c.style.transition = "all .5s cubic-bezier(.2,1.3,.4,1)";
+          c.style.opacity = 1;
+          c.style.transform = "translateY(0)";
+        }, 150 + i * 160);
+      });
+      // 點城堡時冒星星
+      document.querySelectorAll(".castle-card").forEach(function (c) {
+        c.addEventListener("click", function (e) {
+          MLP.Sound.sparkle();
+          MLP.sparkleAt(e.clientX, e.clientY);
+        });
+      });
+    </script>
+  </body>
+</html>

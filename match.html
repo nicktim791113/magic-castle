@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>關係配對 · 魔法小皇宮</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="theme-color" content="#ff7ac0" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="魔法小皇宮" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍎</text></svg>"
+    />
+    <style>
+      body {
+        background: linear-gradient(180deg, #e7f7e0 0%, #d2ecff 60%, #eafff0 100%);
+      }
+      .controls {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .seg {
+        display: inline-flex;
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 14px;
+        padding: 4px;
+        gap: 4px;
+        box-shadow: var(--shadow);
+      }
+      .seg button {
+        font-family: var(--font-cute);
+        font-weight: 800;
+        font-size: 15px;
+        border: none;
+        background: transparent;
+        color: var(--ink);
+        padding: 8px 14px;
+        border-radius: 11px;
+        cursor: pointer;
+      }
+      .seg button.on {
+        background: linear-gradient(180deg, #a6ecb4, #3fbf5d);
+        color: #fff;
+      }
+      .hint {
+        text-align: center;
+        color: #4a8a5a;
+        font-weight: 800;
+        margin: 4px 0 14px;
+        font-size: 17px;
+      }
+      .match-area {
+        position: relative;
+        max-width: 640px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        gap: 60px;
+      }
+      .lines {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 2;
+      }
+      .col {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        flex: 1;
+        max-width: 240px;
+        z-index: 3;
+      }
+      .mcard {
+        background: #fff;
+        border: 4px solid #fff;
+        border-radius: 20px;
+        padding: 10px 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        box-shadow: 0 6px 14px rgba(60, 110, 70, 0.18);
+        transition: transform 0.1s, border-color 0.1s, background 0.2s;
+        position: relative;
+      }
+      .col-right .mcard {
+        flex-direction: row-reverse;
+        text-align: right;
+      }
+      .mcard:hover {
+        transform: translateY(-3px);
+      }
+      .mcard .emj {
+        font-size: clamp(34px, 8vw, 50px);
+        line-height: 1;
+      }
+      .mcard .lbl {
+        font-size: clamp(16px, 3.5vw, 20px);
+        font-weight: 800;
+        flex: 1;
+      }
+      .mcard.sel {
+        border-color: var(--gold);
+        background: #fffbe8;
+        transform: scale(1.04);
+      }
+      .mcard.done {
+        border-color: #5fd07a;
+        background: #eafff0;
+        cursor: default;
+      }
+      .mcard.done::after {
+        content: "✓";
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        background: #4fc36a;
+        color: #fff;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        font-size: 16px;
+        box-shadow: var(--shadow);
+      }
+      .col-right .mcard.done::after {
+        right: auto;
+        left: -10px;
+      }
+      @media (max-width: 560px) {
+        .match-area {
+          gap: 18px;
+        }
+        .mcard {
+          padding: 8px 6px;
+          gap: 6px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="topbar">
+        <a class="btn ghost btn-back" href="index.html">🏰 回城堡</a>
+        <h1>🍎 關係配對</h1>
+        <span id="sound-slot"></span>
+      </div>
+
+      <div class="controls">
+        <div class="seg" id="diff-seg">
+          <button data-diff="easy" class="on">簡單</button>
+          <button data-diff="medium">普通</button>
+          <button data-diff="hard">困難</button>
+        </div>
+        <button class="btn green" id="btn-restart">🔄 換一批</button>
+        <span class="badge" style="margin-left: auto"
+          >💚 <span id="done-count">0</span> / <span id="total-count">0</span></span
+        >
+      </div>
+
+      <p class="hint">幫小動物找到牠喜歡吃的東西！先點動物，再點食物 🐾</p>
+
+      <div class="match-area" id="area">
+        <svg class="lines" id="lines"></svg>
+        <div class="col col-left" id="left"></div>
+        <div class="col col-right" id="right"></div>
+      </div>
+    </div>
+
+    <script src="js/common.js"></script>
+    <script src="js/match.js"></script>
+  </body>
+</html>
