@@ -1,14 +1,27 @@
 # 🏰 魔法小皇宮
 
 一個給小朋友玩的網頁小遊戲合集，迪士尼風格、各國風情城堡入口。
-純 HTML / CSS / JavaScript，**不需要安裝任何東西**，也不需要網路。
+純 HTML / CSS / JavaScript，**不需安裝任何東西、可離線遊玩**，也是一個可以「安裝到桌面／主畫面」的 PWA。
 
-## ▶ 怎麼玩
+## 🌐 線上玩
 
-直接用滑鼠**雙擊 `index.html`**，就會用瀏覽器打開主畫面（建議用 Edge 或 Chrome）。
-從三座城堡選一個進去玩，左上角「🏰 回城堡」可以回到主畫面。
+👉 **https://nicktim791113.github.io/magic-castle/**
 
-> 平板觸控也可以玩；右上角 🔊 可以開關音效。
+手機、平板、電腦的瀏覽器打開就能玩。
+
+## 📲 安裝成 App（PWA）
+
+裝起來之後會像一般 App 一樣有圖示、全螢幕、可離線：
+
+- **iPhone / iPad（Safari）**：打開網址 → 點下方「分享」⬆️ → **加入主畫面**。
+- **Android（Chrome）**：打開網址 → 右上角 ⋮ → **安裝應用程式／加到主畫面**。
+- **電腦（Chrome / Edge）**：網址列右側會出現安裝圖示 ⊕（或 ⋮ →「安裝」），點一下即可。
+
+> 第一次連線後即會快取，之後**沒有網路也能玩**。
+
+## ▶ 在自己電腦離線玩
+
+直接雙擊 `index.html` 也能用瀏覽器打開（建議 Edge 或 Chrome）。平板觸控也支援，右上角 🔊 可開關音效。
 
 ## 🎮 三個遊戲
 
@@ -22,17 +35,33 @@
 
 ```
 魔法小皇宮/
-├── index.html      ← 主入口（三座城堡）
-├── dressup.html    ← 公主換裝
-├── memory.html     ← 記憶配對
-├── match.html      ← 關係配對
-├── css/style.css   ← 共用畫風樣式
+├── index.html          ← 主入口（三座城堡）
+├── dressup.html        ← 公主換裝
+├── memory.html         ← 記憶配對
+├── match.html          ← 關係配對
+├── manifest.webmanifest← PWA 設定（名稱、圖示、顏色）
+├── sw.js               ← Service Worker（離線快取）
+├── icons/              ← App 圖示（192/512/maskable/apple）
+├── assets/icongen.html ← 圖示產生器（製作圖示用，非遊戲必要）
+├── css/style.css       ← 共用畫風樣式
 └── js/
-    ├── common.js   ← 共用：音效、彩帶、慶祝特效
+    ├── common.js   ← 共用：音效、彩帶、慶祝特效、SW 註冊
     ├── dressup.js  ← 換裝（所有髮型/禮服…的圖形都在這）
     ├── memory.js   ← 記憶配對邏輯
     └── match.js    ← 關係配對邏輯
 ```
+
+## 🚀 更新網站（改完自動部署）
+
+這個專案已連到 GitHub，改好檔案後推上去，GitHub Pages 會自動重新部署（約 1 分鐘）：
+
+```bash
+git add -A
+git commit -m "更新內容"
+git push
+```
+
+> Service Worker 用 stale-while-revalidate：使用者**重開兩次**就會拿到新版本（第一次先用舊快取、背景更新，第二次生效）。若改了 `sw.js` 想強制更新，把 `sw.js` 裡的 `mlp-cache-v1` 版本號加一即可。
 
 ## 🛠 想自己加東西？
 
@@ -41,7 +70,8 @@
 - **換記憶卡圖案**：`js/memory.js` 最上面的 `POOL` 陣列換成你喜歡的 emoji。
 - **加新禮服／髮型**：`js/dressup.js` 裡的 `DRESSES`、`HAIRS` 等陣列照著現有格式加。
 - **改色彩主題**：`css/style.css` 最上面的 `:root` 顏色變數。
+- **換 App 圖示**：改 `assets/icongen.html` 的城堡，再重新產生 `icons/` 內的 PNG。
 
-所有圖案都用 emoji 和手繪 SVG，跨電腦都能顯示，不需要圖檔。
+所有圖案都用 emoji 和手繪 SVG，跨裝置都能顯示，不需要圖檔。
 
 💕 做給最可愛的小公主
