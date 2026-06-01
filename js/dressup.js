@@ -1,10 +1,10 @@
 /* ============================================================
-   公主換裝 — 衣櫥資料與邏輯
+   換裝舞臺 — 衣櫥資料與邏輯（公主 + 小王子）
    ============================================================ */
 (function () {
   "use strict";
 
-  /* ---------------- 場景 ---------------- */
+  /* ---------------- 場景（共用） ---------------- */
   var SCENES = [
     {
       name: "夢幻城堡",
@@ -63,54 +63,106 @@
     },
   ];
 
+  /* ---------------- 膚色（共用） ---------------- */
+  var SKINS = [
+    { name: "白皙", color: "#ffe0bd" },
+    { name: "自然", color: "#f4c79c" },
+    { name: "蜜糖", color: "#d99a6c" },
+    { name: "陽光", color: "#b5733f" },
+  ];
+
   /* ---------------- 髮型 ---------------- */
-  var HAIRS = [
+  // 公主髮型
+  var PRINCESS_HAIRS = [
     {
-      name: "長直髮",
+      name: "長捲髮",
       swatch: "#7a4a28",
       back:
-        '<ellipse cx="180" cy="118" rx="86" ry="88" fill="#7a4a28"/>' +
-        '<path d="M96 120 Q84 250 104 330 Q120 342 130 326 Q116 230 126 130 Z" fill="#7a4a28"/>' +
-        '<path d="M264 120 Q276 250 256 330 Q240 342 230 326 Q244 230 234 130 Z" fill="#7a4a28"/>',
+        '<ellipse cx="180" cy="116" rx="88" ry="90" fill="#7a4a28"/>' +
+        '<path d="M94 118 Q80 250 100 332 Q118 346 130 328 Q114 230 126 128 Z" fill="#7a4a28"/>' +
+        '<path d="M266 118 Q280 250 260 332 Q242 346 230 328 Q246 230 234 128 Z" fill="#7a4a28"/>' +
+        '<path d="M96 150 Q92 240 104 300" stroke="#9a6238" stroke-width="6" fill="none" stroke-linecap="round" opacity=".6"/>',
       front:
-        '<path d="M108 116 Q102 50 180 48 Q258 50 252 116 Q244 92 224 98 Q214 74 196 96 Q188 70 180 94 Q172 70 164 96 Q146 74 136 98 Q116 92 108 116 Z" fill="#7a4a28"/>',
+        '<path d="M106 116 Q100 48 180 46 Q260 48 254 116 Q244 90 222 98 Q212 72 194 94 Q186 68 180 92 Q174 68 166 94 Q148 72 138 98 Q116 90 106 116 Z" fill="#7a4a28"/>' +
+        '<path d="M150 70 Q170 60 198 68" stroke="#9a6238" stroke-width="4" fill="none" stroke-linecap="round" opacity=".6"/>',
     },
     {
       name: "雙馬尾",
       swatch: "#2b2b3a",
       back:
-        '<ellipse cx="180" cy="112" rx="82" ry="80" fill="#2b2b3a"/>' +
-        '<ellipse cx="86" cy="214" rx="30" ry="58" fill="#2b2b3a"/>' +
-        '<ellipse cx="274" cy="214" rx="30" ry="58" fill="#2b2b3a"/>' +
-        '<circle cx="104" cy="150" r="9" fill="#ff6fae"/>' +
-        '<circle cx="256" cy="150" r="9" fill="#ff6fae"/>',
+        '<ellipse cx="180" cy="110" rx="84" ry="82" fill="#2b2b3a"/>' +
+        '<ellipse cx="82" cy="212" rx="32" ry="60" fill="#2b2b3a"/>' +
+        '<ellipse cx="278" cy="212" rx="32" ry="60" fill="#2b2b3a"/>' +
+        '<circle cx="102" cy="148" r="10" fill="#ff6fae"/>' +
+        '<circle cx="258" cy="148" r="10" fill="#ff6fae"/>',
       front:
-        '<path d="M108 116 Q102 50 180 48 Q258 50 252 116 Q244 92 224 98 Q214 74 196 96 Q188 70 180 94 Q172 70 164 96 Q146 74 136 98 Q116 92 108 116 Z" fill="#2b2b3a"/>',
+        '<path d="M106 116 Q100 48 180 46 Q260 48 254 116 Q244 90 222 98 Q212 72 194 94 Q186 68 180 92 Q174 68 166 94 Q148 72 138 98 Q116 90 106 116 Z" fill="#2b2b3a"/>',
     },
     {
       name: "金色捲髮",
       swatch: "#e8b84a",
       back:
-        '<ellipse cx="180" cy="118" rx="88" ry="86" fill="#e8b84a"/>' +
-        '<path d="M96 150 Q86 224 96 276 Q112 254 122 276 Q136 254 146 278 L152 150 Z" fill="#e8b84a"/>' +
-        '<path d="M264 150 Q274 224 264 276 Q248 254 238 276 Q224 254 214 278 L208 150 Z" fill="#e8b84a"/>',
+        '<ellipse cx="180" cy="116" rx="90" ry="88" fill="#e8b84a"/>' +
+        '<path d="M94 150 Q84 226 96 280 Q112 256 124 280 Q138 256 148 282 L154 150 Z" fill="#e8b84a"/>' +
+        '<path d="M266 150 Q276 226 264 280 Q248 256 236 280 Q222 256 212 282 L206 150 Z" fill="#e8b84a"/>',
       front:
-        '<path d="M104 116 Q100 52 180 48 Q260 52 256 112 Q230 84 188 92 Q150 86 132 104 Q118 96 104 116 Z" fill="#e8b84a"/>',
+        '<path d="M104 116 Q100 50 180 46 Q260 50 256 112 Q230 82 188 90 Q150 84 132 104 Q118 96 104 116 Z" fill="#e8b84a"/>' +
+        '<path d="M140 72 Q176 60 214 70" stroke="#ffd87a" stroke-width="5" fill="none" stroke-linecap="round" opacity=".7"/>',
     },
     {
-      name: "短髮",
+      name: "波波短髮",
       swatch: "#b5532e",
       back:
-        '<ellipse cx="180" cy="120" rx="84" ry="84" fill="#b5532e"/>' +
-        '<path d="M98 132 Q96 184 112 204 L122 150 Z" fill="#b5532e"/>' +
-        '<path d="M262 132 Q264 184 248 204 L238 150 Z" fill="#b5532e"/>',
+        '<ellipse cx="180" cy="120" rx="86" ry="86" fill="#b5532e"/>' +
+        '<path d="M96 130 Q94 186 112 208 L124 150 Z" fill="#b5532e"/>' +
+        '<path d="M264 130 Q266 186 248 208 L236 150 Z" fill="#b5532e"/>',
       front:
-        '<path d="M104 118 Q100 50 180 48 Q260 50 256 118 Q244 96 220 100 Q206 78 190 96 Q180 76 170 96 Q154 78 140 100 Q116 96 104 118 Z" fill="#b5532e"/>',
+        '<path d="M104 118 Q100 48 180 46 Q260 48 256 118 Q244 94 220 100 Q206 76 190 96 Q180 74 170 96 Q154 76 140 100 Q116 94 104 118 Z" fill="#b5532e"/>',
     },
   ];
+  // 王子髮型
+  var PRINCE_HAIRS = [
+    {
+      name: "俏皮短髮",
+      swatch: "#6b4a2e",
+      back:
+        '<path d="M112 108 Q108 150 122 172 L134 118 Z" fill="#6b4a2e"/>' +
+        '<path d="M248 108 Q252 150 238 172 L226 118 Z" fill="#6b4a2e"/>',
+      front:
+        '<path d="M108 118 Q104 54 180 50 Q256 54 252 118 Q250 90 232 88 Q216 72 196 88 Q188 70 180 86 Q172 70 164 88 Q144 72 128 88 Q110 90 108 118 Z" fill="#6b4a2e"/>' +
+        '<path d="M150 70 Q172 60 198 66" stroke="#8a6240" stroke-width="4" fill="none" stroke-linecap="round" opacity=".7"/>',
+    },
+    {
+      name: "旁分頭",
+      swatch: "#2b2b3a",
+      back:
+        '<path d="M112 110 Q108 148 122 168 L132 120 Z" fill="#2b2b3a"/>' +
+        '<path d="M248 110 Q252 148 238 168 L228 120 Z" fill="#2b2b3a"/>',
+      front:
+        '<path d="M106 118 Q102 52 180 48 Q258 52 252 112 Q244 84 150 92 Q124 96 106 118 Z" fill="#2b2b3a"/>',
+    },
+    {
+      name: "金棕捲",
+      swatch: "#caa14e",
+      back: '<ellipse cx="180" cy="100" rx="82" ry="58" fill="#caa14e"/>',
+      front:
+        '<path d="M108 116 Q106 58 180 52 Q254 58 252 116 Q240 100 228 110 Q216 96 204 108 Q192 96 180 108 Q168 96 156 108 Q144 96 132 110 Q120 100 108 116 Z" fill="#caa14e"/>',
+    },
+    {
+      name: "翹翹頭",
+      swatch: "#4a3526",
+      back:
+        '<path d="M114 112 Q110 144 122 162 L132 120 Z" fill="#4a3526"/>' +
+        '<path d="M246 112 Q250 144 238 162 L228 120 Z" fill="#4a3526"/>',
+      front:
+        '<path d="M108 116 L122 70 L136 104 L150 64 L166 102 L180 56 L196 102 L210 64 L226 104 L240 70 L252 116 Q180 98 108 116 Z" fill="#4a3526"/>',
+    },
+  ];
+  var HAIRS = [PRINCESS_HAIRS, PRINCE_HAIRS];
 
-  /* ---------------- 禮服 ---------------- */
-  var DRESSES = [
+  /* ---------------- 服裝 ---------------- */
+  // 公主禮服
+  var PRINCESS_OUTFITS = [
     {
       name: "粉紅蓬裙",
       swatch: "#ff8fc7",
@@ -174,7 +226,48 @@
     },
   ];
 
-  /* ---------------- 鞋子（per-foot 建構） ---------------- */
+  // 王子西裝產生器
+  function princeSuit(c) {
+    var s = "";
+    // 褲子
+    s += '<path d="M164 300 L162 474" stroke="' + c.pants + '" stroke-width="26" stroke-linecap="round"/>';
+    s += '<path d="M196 300 L198 474" stroke="' + c.pants + '" stroke-width="26" stroke-linecap="round"/>';
+    s += '<rect x="150" y="284" width="60" height="28" rx="5" fill="' + c.pants + '"/>';
+    // 外套
+    s += '<path d="M150 204 Q180 196 210 204 L214 302 L146 302 Z" fill="' + c.main + '"/>';
+    // 襯衫 V
+    s += '<path d="M168 206 L180 252 L192 206 Z" fill="' + (c.shirt || "#ffffff") + '"/>';
+    // 肩帶
+    if (c.sash) {
+      s += '<path d="M150 214 L208 288 L199 298 L143 224 Z" fill="' + c.sash + '"/>';
+    }
+    // 鈕扣
+    s += '<circle cx="180" cy="232" r="3.2" fill="#ffd24d"/><circle cx="180" cy="252" r="3.2" fill="#ffd24d"/><circle cx="180" cy="272" r="3.2" fill="#ffd24d"/>';
+    // 領子
+    s += '<path d="M166 206 Q180 220 194 206 L194 215 Q180 227 166 215 Z" fill="' + c.trim + '"/>';
+    // 袖子
+    s += '<path d="M150 210 Q140 270 146 326" stroke="' + c.main + '" stroke-width="22" fill="none" stroke-linecap="round"/>';
+    s += '<path d="M210 210 Q220 270 214 326" stroke="' + c.main + '" stroke-width="22" fill="none" stroke-linecap="round"/>';
+    // 袖口
+    s += '<circle cx="146" cy="326" r="11" fill="' + c.trim + '"/><circle cx="214" cy="326" r="11" fill="' + c.trim + '"/>';
+    // 肩章
+    if (c.epaulettes) {
+      s += '<circle cx="150" cy="210" r="10" fill="' + c.trim + '"/><circle cx="210" cy="210" r="10" fill="' + c.trim + '"/>';
+    }
+    return s;
+  }
+  // 王子服裝
+  var PRINCE_OUTFITS = [
+    { name: "王子藍裝", swatch: "#4a6fd0", svg: princeSuit({ main: "#4a6fd0", trim: "#ffd24d", pants: "#ffffff", sash: "#ff5fa9", epaulettes: true }) },
+    { name: "皇家紅裝", swatch: "#d24a55", svg: princeSuit({ main: "#d24a55", trim: "#ffd24d", pants: "#2b2b3a", sash: "#5a8fe0", epaulettes: true }) },
+    { name: "冒險綠裝", swatch: "#3fa55a", svg: princeSuit({ main: "#3fa55a", trim: "#caa14e", pants: "#6b4a2e", shirt: "#eaffea", epaulettes: false }) },
+    { name: "騎士白裝", swatch: "#e7edf5", svg: princeSuit({ main: "#eef2f7", trim: "#aab6c6", pants: "#aab6c6", sash: "#4a6fd0", epaulettes: true }) },
+    { name: "休閒裝", swatch: "#ffce5a", svg: princeSuit({ main: "#ffce5a", trim: "#ff8fc7", pants: "#6b8fd0", shirt: "#fff4d6", epaulettes: false }) },
+  ];
+  var OUTFITS = [PRINCESS_OUTFITS, PRINCE_OUTFITS];
+
+  /* ---------------- 鞋子（共用） ---------------- */
+  var FOOT_X = [164, 196];
   var SHOES = [
     {
       name: "芭蕾舞鞋",
@@ -220,13 +313,25 @@
         );
       },
     },
+    {
+      name: "運動鞋",
+      swatch: "#5ec6ff",
+      build: function (x) {
+        return (
+          '<path d="M' + (x - 18) + ' 484 q-2 10 2 14 q16 6 34 1 l1 -9 q-16 4 -31 -2 Z" fill="#ffffff" stroke="#cfd8e3" stroke-width="1.5"/>' +
+          '<path d="M' + (x - 16) + ' 492 h32 l-1 5 q-16 5 -31 0 Z" fill="#5ec6ff"/>' +
+          '<path d="M' + (x - 2) + ' 486 l8 3" stroke="#5ec6ff" stroke-width="2.5"/>'
+        );
+      },
+    },
     { name: "赤腳", swatch: "#ffe0bd", build: function () { return ""; } },
   ];
 
-  /* ---------------- 皇冠 / 頭飾 ---------------- */
-  var CROWNS = [
+  /* ---------------- 頭飾（共用） ---------------- */
+  var HEADWEAR = [
+    { name: "不戴", emoji: "🚫", svg: "" },
     {
-      name: "黃金皇冠",
+      name: "公主皇冠",
       emoji: "👑",
       svg:
         '<path d="M146 66 L152 42 L166 60 L180 36 L194 60 L208 42 L214 66 Z" fill="#ffd24d" stroke="#e0a800" stroke-width="2" stroke-linejoin="round"/>' +
@@ -261,64 +366,90 @@
         '<text x="198" y="66" font-size="20">🌸</text>' +
         '<text x="224" y="74" font-size="18">🌼</text>',
     },
-    { name: "不戴", emoji: "🚫", svg: "" },
+    {
+      name: "王子皇冠",
+      emoji: "🤴",
+      svg:
+        '<path d="M156 60 L156 40 L170 54 L180 30 L190 54 L204 40 L204 60 Z" fill="#ffd24d" stroke="#e0a800" stroke-width="2" stroke-linejoin="round"/>' +
+        '<rect x="154" y="58" width="52" height="9" rx="3" fill="#ffcf4d"/>' +
+        '<rect x="178" y="18" width="4" height="12" fill="#ffd24d"/>' +
+        '<rect x="174" y="22" width="12" height="4" rx="1" fill="#ffd24d"/>' +
+        '<circle cx="180" cy="49" r="4.5" fill="#ff5fa9"/>' +
+        '<circle cx="164" cy="48" r="3" fill="#7bd8ff"/>' +
+        '<circle cx="196" cy="48" r="3" fill="#7bd8ff"/>',
+    },
+    {
+      name: "羽毛帽",
+      emoji: "🪶",
+      svg:
+        '<path d="M150 64 Q180 38 210 64 Q180 56 150 64 Z" fill="#2f7d44"/>' +
+        '<path d="M156 60 Q180 30 204 60 Q180 48 156 60 Z" fill="#3fa55a"/>' +
+        '<path d="M198 54 Q224 26 216 56 Q208 48 198 54 Z" fill="#ff5fa9"/>' +
+        '<rect x="152" y="60" width="56" height="7" rx="3" fill="#caa14e"/>',
+    },
   ];
 
-  /* ---------------- 膚色 ---------------- */
-  var SKINS = [
-    { name: "白皙", color: "#ffe0bd" },
-    { name: "自然", color: "#f4c79c" },
-    { name: "蜜糖", color: "#d99a6c" },
-    { name: "陽光", color: "#b5733f" },
+  /* ---------------- 角色 ---------------- */
+  var CHARS = [
+    { name: "公主", emoji: "👸" },
+    { name: "王子", emoji: "🤴" },
   ];
+  var DEFAULT_HEAD = [1, 5]; // 公主→公主皇冠, 王子→王子皇冠
+  var DEFAULT_SHOES = [0, 3]; // 公主→芭蕾舞鞋, 王子→棕色短靴
 
-  /* ---------------- 設定 ---------------- */
+  /* ---------------- 分類 ---------------- */
   var CATS = [
-    { key: "scene", label: "🏞️ 場景", data: SCENES, kind: "emoji" },
-    { key: "hair", label: "💇 髮型", data: HAIRS, kind: "swatch" },
-    { key: "dress", label: "👗 禮服", data: DRESSES, kind: "swatch" },
-    { key: "shoes", label: "👠 鞋子", data: SHOES, kind: "swatch" },
-    { key: "crown", label: "👑 頭飾", data: CROWNS, kind: "emoji" },
-    { key: "skin", label: "🎨 膚色", data: SKINS, kind: "skincolor" },
+    { key: "char", label: "🧒 角色", kind: "emoji" },
+    { key: "hair", label: "💇 髮型", kind: "swatch" },
+    { key: "outfit", label: "👗 服裝", kind: "swatch" },
+    { key: "shoes", label: "👟 鞋子", kind: "swatch" },
+    { key: "head", label: "👑 頭飾", kind: "emoji" },
+    { key: "skin", label: "🎨 膚色", kind: "skincolor" },
+    { key: "scene", label: "🏰 場景", kind: "emoji" },
   ];
 
-  var DEFAULTS = { scene: 0, hair: 0, dress: 0, shoes: 0, crown: 0, skin: 0 };
+  var DEFAULTS = { char: 0, hair: 0, outfit: 0, shoes: 0, head: 1, skin: 0, scene: 0 };
   var state = Object.assign({}, DEFAULTS);
-  var activeCat = "dress";
+  var activeCat = "char";
 
   var doll = document.getElementById("doll");
-  var FOOT_X = [164, 196];
+
+  function curHairs() { return HAIRS[state.char]; }
+  function curOutfits() { return OUTFITS[state.char]; }
+  function getData(key) {
+    switch (key) {
+      case "char": return CHARS;
+      case "hair": return curHairs();
+      case "outfit": return curOutfits();
+      case "shoes": return SHOES;
+      case "head": return HEADWEAR;
+      case "skin": return SKINS;
+      case "scene": return SCENES;
+    }
+    return [];
+  }
 
   /* ---------------- 渲染娃娃 ---------------- */
-  function setLayer(id, html) {
-    document.getElementById(id).innerHTML = html;
-  }
-  function renderScene() {
-    setLayer("scene", SCENES[state.scene].svg);
-  }
+  function setLayer(id, html) { document.getElementById(id).innerHTML = html; }
+  function renderScene() { setLayer("scene", SCENES[state.scene].svg); }
   function renderHair() {
-    setLayer("backhair", HAIRS[state.hair].back);
-    setLayer("fronthair", HAIRS[state.hair].front);
+    var h = curHairs()[state.hair];
+    setLayer("backhair", h.back);
+    setLayer("fronthair", h.front);
   }
-  function renderDress() {
-    setLayer("dress", DRESSES[state.dress].svg);
-  }
+  function renderOutfit() { setLayer("dress", curOutfits()[state.outfit].svg); }
   function renderShoes() {
     var s = SHOES[state.shoes];
     setLayer("shoes", s.build(FOOT_X[0]) + s.build(FOOT_X[1]));
   }
-  function renderCrown() {
-    setLayer("crown", CROWNS[state.crown].svg);
-  }
-  function renderSkin() {
-    doll.style.setProperty("--skin", SKINS[state.skin].color);
-  }
+  function renderHead() { setLayer("crown", HEADWEAR[state.head].svg); }
+  function renderSkin() { doll.style.setProperty("--skin", SKINS[state.skin].color); }
   function renderAll() {
     renderScene();
     renderHair();
-    renderDress();
+    renderOutfit();
     renderShoes();
-    renderCrown();
+    renderHead();
     renderSkin();
   }
 
@@ -349,30 +480,23 @@
   }
 
   function buildOptions() {
-    var cat = CATS.filter(function (c) {
-      return c.key === activeCat;
-    })[0];
+    var cat = CATS.filter(function (c) { return c.key === activeCat; })[0];
+    var data = getData(cat.key);
     optsEl.innerHTML = "";
-    cat.data.forEach(function (item, i) {
+    data.forEach(function (item, i) {
       var div = document.createElement("div");
       div.className = "opt" + (state[cat.key] === i ? " sel" : "");
       var swatchHtml;
       if (cat.kind === "emoji") {
-        swatchHtml =
-          '<div class="swatch" style="background:#fff">' + item.emoji + "</div>";
+        swatchHtml = '<div class="swatch" style="background:#fff">' + item.emoji + "</div>";
       } else if (cat.kind === "skincolor") {
-        swatchHtml =
-          '<div class="swatch" style="background:' + item.color + '"></div>';
+        swatchHtml = '<div class="swatch" style="background:' + item.color + '"></div>';
       } else {
-        swatchHtml =
-          '<div class="swatch" style="background:' + item.swatch + '"></div>';
+        swatchHtml = '<div class="swatch" style="background:' + item.swatch + '"></div>';
       }
       div.innerHTML = swatchHtml + '<div class="nm">' + item.name + "</div>";
       div.addEventListener("click", function (e) {
-        state[cat.key] = i;
-        applyCategory(cat.key);
-        buildOptions();
-        bounce();
+        selectOption(cat.key, i);
         MLP.Sound.sparkle();
         MLP.sparkleAt(e.clientX, e.clientY);
       });
@@ -380,34 +504,45 @@
     });
   }
 
+  function selectOption(key, i) {
+    if (key === "char") {
+      state.char = i;
+      // 切換角色 → 重設成該角色的預設造型
+      state.hair = 0;
+      state.outfit = 0;
+      state.head = DEFAULT_HEAD[i];
+      state.shoes = DEFAULT_SHOES[i];
+      renderAll();
+    } else {
+      state[key] = i;
+      applyCategory(key);
+    }
+    buildOptions();
+    bounce();
+  }
+
   function applyCategory(key) {
     switch (key) {
-      case "scene":
-        renderScene();
-        break;
-      case "hair":
-        renderHair();
-        break;
-      case "dress":
-        renderDress();
-        break;
-      case "shoes":
-        renderShoes();
-        break;
-      case "crown":
-        renderCrown();
-        break;
-      case "skin":
-        renderSkin();
-        break;
+      case "scene": renderScene(); break;
+      case "hair": renderHair(); break;
+      case "outfit": renderOutfit(); break;
+      case "shoes": renderShoes(); break;
+      case "head": renderHead(); break;
+      case "skin": renderSkin(); break;
     }
   }
 
-  /* ---------------- 工具列按鈕 ---------------- */
+  /* ---------------- 工具列 ---------------- */
+  function rand(n) { return (Math.random() * n) | 0; }
+
   document.getElementById("btn-random").addEventListener("click", function () {
-    CATS.forEach(function (c) {
-      state[c.key] = (Math.random() * c.data.length) | 0;
-    });
+    state.char = rand(CHARS.length);
+    state.hair = rand(curHairs().length);
+    state.outfit = rand(curOutfits().length);
+    state.shoes = rand(SHOES.length);
+    state.head = rand(HEADWEAR.length);
+    state.skin = rand(SKINS.length);
+    state.scene = rand(SCENES.length);
     renderAll();
     buildOptions();
     bounce();
@@ -444,7 +579,7 @@
         canvas.toBlob(function (blob) {
           var a = document.createElement("a");
           a.href = URL.createObjectURL(blob);
-          a.download = "我的公主造型.png";
+          a.download = "我的" + CHARS[state.char].name + "造型.png";
           document.body.appendChild(a);
           a.click();
           a.remove();
@@ -452,9 +587,7 @@
           MLP.confetti(60);
         });
       };
-      img.onerror = function () {
-        alert("拍照失敗了，再試一次吧！");
-      };
+      img.onerror = function () { alert("拍照失敗了，再試一次吧！"); };
       img.src = url;
     } catch (e) {
       alert("拍照失敗了，再試一次吧！");
