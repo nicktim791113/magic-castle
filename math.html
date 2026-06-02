@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>數數樂園 · 魔法小皇宮</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="theme-color" content="#3bb0c9" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="魔法小皇宮" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧜‍♀️</text></svg>"
+    />
+    <style>
+      body {
+        background: linear-gradient(180deg, #aef0e6 0%, #8fdcec 55%, #bfe9ff 100%);
+      }
+      .math-wrap {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      .controls {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+      .seg {
+        display: inline-flex;
+        background: rgba(255, 255, 255, 0.72);
+        border-radius: 14px;
+        padding: 4px;
+        gap: 4px;
+        box-shadow: var(--shadow);
+      }
+      .seg button {
+        font-family: var(--font-cute);
+        font-weight: 800;
+        font-size: 15px;
+        border: none;
+        background: transparent;
+        color: var(--ink);
+        padding: 9px 14px;
+        border-radius: 11px;
+        cursor: pointer;
+      }
+      .seg button.on {
+        background: linear-gradient(180deg, #6fd9e8, #2a9fc0);
+        color: #fff;
+      }
+      .math-prompt {
+        text-align: center;
+        font-size: clamp(17px, 3.2vw, 22px);
+        font-weight: 900;
+        color: #1f7a92;
+        margin: 6px 0 8px;
+      }
+      .statrow {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .scene {
+        position: relative;
+        width: 100%;
+        height: min(58vh, 400px);
+        border-radius: 22px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        margin: 0 auto;
+      }
+      .scene.ocean { background: linear-gradient(180deg, #7fd0ff 0%, #2a7fb8 100%); }
+      .scene.garden { background: linear-gradient(180deg, #c4ecff 0%, #c4ecff 42%, #9adf7a 42%, #6cc85a 100%); }
+      .scene.sky { background: linear-gradient(180deg, #bfe9ff 0%, #eaf8ff 100%); }
+      .scene.night { background: linear-gradient(180deg, #2a2a55 0%, #4a3f86 100%); }
+      .scene.orchard { background: linear-gradient(180deg, #c4ecff 0%, #c4ecff 38%, #9adf8a 38%, #7bc96a 100%); }
+      .scene.pond { background: linear-gradient(180deg, #a8e6e0 0%, #4fb6cc 100%); }
+      .obj {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        font-size: clamp(28px, 7vw, 46px);
+        line-height: 1;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 2px;
+        transition: transform 0.12s ease;
+        filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2));
+      }
+      .obj:hover { transform: translate(-50%, -50%) scale(1.1); }
+      .obj.counted {
+        transform: translate(-50%, -50%) scale(1.12);
+        border-radius: 50%;
+        box-shadow: 0 0 0 4px #ffd24d, 0 0 12px 2px rgba(255, 210, 77, 0.7);
+      }
+      .decor {
+        position: absolute;
+        font-size: clamp(28px, 8vw, 50px);
+        opacity: 0.55;
+        pointer-events: none;
+      }
+      .count-chip {
+        position: relative;
+        z-index: 3;
+      }
+      .choices {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 14px;
+        margin-top: 18px;
+      }
+      .choice {
+        font-family: var(--font-cute);
+        font-weight: 900;
+        font-size: 38px;
+        min-width: 78px;
+        padding: 14px 10px;
+        border: none;
+        border-radius: 20px;
+        background: #fff;
+        color: #1f7a92;
+        box-shadow: 0 5px 0 rgba(0, 0, 0, 0.1), var(--shadow);
+        cursor: pointer;
+        transition: transform 0.1s;
+      }
+      .choice:active { transform: translateY(3px); }
+      .choice.ok {
+        background: linear-gradient(180deg, #a6ecb4, #3fbf5d);
+        color: #fff;
+      }
+      .choice.bad { animation: shake 0.5s ease; }
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: 24px;
+        transform: translateX(-50%);
+        background: rgba(30, 122, 146, 0.95);
+        color: #fff;
+        font-weight: 800;
+        padding: 12px 22px;
+        border-radius: 999px;
+        opacity: 0;
+        transition: opacity 0.2s;
+        pointer-events: none;
+        z-index: 9998;
+        font-size: 16px;
+      }
+      .toast.show { opacity: 1; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="topbar">
+        <a class="btn ghost btn-back" href="index.html">🏰 回城堡</a>
+        <h1>🧜‍♀️ 數數樂園</h1>
+        <span id="sound-slot"></span>
+      </div>
+
+      <div class="math-wrap">
+        <div class="controls">
+          <div class="seg" id="diff-seg">
+            <button data-diff="easy" class="on">簡單 1–5</button>
+            <button data-diff="medium">普通 1–10</button>
+            <button data-diff="hard">困難 1–20</button>
+          </div>
+          <button class="btn ice" id="btn-new">🔄 換一題</button>
+        </div>
+
+        <p class="math-prompt" id="prompt"></p>
+
+        <div class="statrow">
+          <span class="badge count-chip">👆 你數了 <span id="counter">0</span> 個</span>
+          <span class="badge">⭐ 答對 <span id="score">0</span> 題</span>
+        </div>
+
+        <div class="scene ocean" id="scene"></div>
+
+        <div class="choices" id="choices"></div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="js/common.js"></script>
+    <script src="js/math.js"></script>
+  </body>
+</html>
