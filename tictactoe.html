@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>花木蘭井字棋 · 魔法小皇宮</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="theme-color" content="#c0392b" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="魔法小皇宮" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏯</text></svg>"
+    />
+    <style>
+      body {
+        background: linear-gradient(180deg, #ffe9d0 0%, #ffd9c0 50%, #ffd0d0 100%);
+      }
+      .btn.red {
+        background: linear-gradient(180deg, #ef6b6b, #d23b3b);
+        color: #fff;
+      }
+      .ttt-wrap {
+        max-width: 560px;
+        margin: 0 auto;
+      }
+      .seg {
+        display: inline-flex;
+        background: rgba(255, 255, 255, 0.72);
+        border-radius: 14px;
+        padding: 4px;
+        gap: 4px;
+        box-shadow: var(--shadow);
+      }
+      .seg button {
+        font-family: var(--font-cute);
+        font-weight: 800;
+        font-size: 15px;
+        border: none;
+        background: transparent;
+        color: var(--ink);
+        padding: 10px 16px;
+        border-radius: 11px;
+        cursor: pointer;
+      }
+      .seg button.on {
+        background: linear-gradient(180deg, #ef6b6b, #c0392b);
+        color: #fff;
+      }
+      /* 計分板 */
+      .scoreboard {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        margin-bottom: 16px;
+      }
+      .score-row {
+        display: flex;
+      }
+      .score-cell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2px 20px;
+      }
+      .score-cell + .score-cell {
+        border-left: 1px solid rgba(0, 0, 0, 0.1);
+      }
+      .score-cell .lbl {
+        font-size: 12px;
+        font-weight: 800;
+        color: #a8451f;
+        letter-spacing: 1px;
+      }
+      .score-cell .num {
+        font-size: 26px;
+        font-weight: 900;
+      }
+      .num.x { color: #d23b3b; }
+      .num.o { color: #2a6fd0; }
+      .num.d { color: #888; }
+      .reset-link {
+        margin-top: 4px;
+        font-size: 12px;
+        color: rgba(168, 69, 31, 0.6);
+        background: none;
+        border: none;
+        font-weight: 800;
+        cursor: pointer;
+        text-decoration: underline;
+      }
+      .settings-center {
+        text-align: center;
+      }
+      .mode-desc {
+        font-size: 13px;
+        color: #a8451f;
+        opacity: 0.8;
+        margin: 8px 0 14px;
+        min-height: 18px;
+      }
+      .field-label {
+        font-size: 13px;
+        font-weight: 800;
+        color: #a8451f;
+        letter-spacing: 1px;
+        margin: 6px 0;
+      }
+      /* 狀態列 */
+      .ttt-status {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.82);
+        border-radius: 16px;
+        padding: 12px 20px;
+        margin-bottom: 10px;
+        box-shadow: var(--shadow);
+      }
+      .side {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        opacity: 0.42;
+        transition: 0.2s;
+      }
+      .side.active {
+        opacity: 1;
+        transform: scale(1.08);
+      }
+      .side .mk {
+        font-size: 26px;
+        font-weight: 900;
+      }
+      .side.x .mk { color: #d23b3b; }
+      .side.o .mk { color: #2a6fd0; }
+      .timer-num {
+        font-size: 32px;
+        font-weight: 900;
+        color: #a8451f;
+        min-width: 2ch;
+        text-align: center;
+      }
+      .timebar-wrap {
+        height: 12px;
+        background: #ecdcc4;
+        border-radius: 999px;
+        overflow: hidden;
+        margin-bottom: 16px;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+      }
+      .timebar {
+        height: 100%;
+        width: 100%;
+        background: #4fc36a;
+        transition: width 0.1s linear;
+      }
+      /* 經典棋盤 */
+      .ttt-classic {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        width: min(86vw, 340px);
+        margin: 0 auto;
+      }
+      .ttt-cell {
+        aspect-ratio: 1;
+        border: none;
+        border-radius: 16px;
+        background: #fff;
+        box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.08), var(--shadow);
+        font-size: clamp(36px, 11vw, 58px);
+        font-weight: 900;
+        cursor: pointer;
+        font-family: var(--font-cute);
+      }
+      .ttt-cell.x { color: #d23b3b; }
+      .ttt-cell.o { color: #2a6fd0; }
+      .ttt-cell:not([disabled]):hover { background: #fff3e0; }
+      .ttt-cell:not([disabled]):active { transform: scale(0.95); }
+      .ttt-cell.win { background: #ffe9a8; box-shadow: 0 0 0 4px var(--gold); }
+      .ttt-cell[disabled] { cursor: default; }
+      /* 終極棋盤 */
+      .ttt-ultimate {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        width: min(94vw, 520px);
+        margin: 0 auto;
+        background: rgba(170, 70, 40, 0.1);
+        padding: 8px;
+        border-radius: 14px;
+      }
+      .ttt-board {
+        position: relative;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.45);
+        padding: 3px;
+        transition: all 0.2s;
+      }
+      .ttt-board.active-board {
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 0 14px rgba(210, 59, 59, 0.4);
+        outline: 2px solid #d23b3b;
+      }
+      .ttt-board.win {
+        background: #ffe9a8;
+        outline: 3px solid var(--gold);
+      }
+      .ttt-sub {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2px;
+      }
+      .ttt-sub.dim { opacity: 0.22; filter: blur(0.5px); }
+      .ttt-scell {
+        aspect-ratio: 1;
+        border: none;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.7);
+        font-size: clamp(11px, 3.2vw, 20px);
+        font-weight: 900;
+        cursor: pointer;
+        font-family: var(--font-cute);
+      }
+      .ttt-scell.x { color: #d23b3b; }
+      .ttt-scell.o { color: #2a6fd0; }
+      .ttt-scell[disabled] { cursor: default; }
+      .big-mark {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: clamp(28px, 8.5vw, 52px);
+        font-weight: 900;
+        z-index: 5;
+        pointer-events: none;
+        opacity: 0.85;
+      }
+      .big-mark.x { color: #d23b3b; }
+      .big-mark.o { color: #2a6fd0; }
+      .big-mark.d { color: #aaa; }
+      .surrender-row {
+        text-align: center;
+        margin-top: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="topbar">
+        <a class="btn ghost btn-back" href="index.html">🏰 回城堡</a>
+        <h1>🏯 花木蘭井字棋</h1>
+        <span id="sound-slot"></span>
+      </div>
+      <p class="subtitle" id="title-sub">選擇你的戰場，開始這場智慧對決</p>
+
+      <div class="ttt-wrap">
+        <!-- 計分板 -->
+        <div class="scoreboard panel">
+          <div class="score-row">
+            <div class="score-cell"><span class="lbl">玩家 X</span><span class="num x" id="score-x">0</span></div>
+            <div class="score-cell"><span class="lbl">平手</span><span class="num d" id="score-d">0</span></div>
+            <div class="score-cell"><span class="lbl">玩家 O</span><span class="num o" id="score-o">0</span></div>
+          </div>
+          <button class="reset-link" id="btn-reset-scores">↺ 歸零計分板</button>
+        </div>
+
+        <!-- 設定 -->
+        <div id="settings" class="panel settings-center">
+          <div class="field-label">選擇戰場模式</div>
+          <div class="seg" id="mode-seg">
+            <button data-mode="classic" class="on">經典戰場 3×3</button>
+            <button data-mode="ultimate">大王國 9×9</button>
+          </div>
+          <p class="mode-desc" id="mode-desc">純粹的速度與反應對決。</p>
+          <div class="field-label">每步思考時間</div>
+          <div class="seg" id="time-seg" style="margin-bottom: 18px">
+            <button data-time="3">3秒</button>
+            <button data-time="5" class="on">5秒</button>
+            <button data-time="10">10秒</button>
+            <button data-time="15">15秒</button>
+          </div>
+          <br />
+          <button class="btn red" id="btn-start" style="font-size: 20px; padding: 14px 34px">
+            開始對局 🌸
+          </button>
+        </div>
+
+        <!-- 遊戲 -->
+        <div id="game" class="panel" style="display: none">
+          <div class="ttt-status">
+            <div class="side x active" id="x-side"><span class="mk">X</span><span>先手</span></div>
+            <div class="timer-num" id="timer-num">5</div>
+            <div class="side o" id="o-side"><span>後手</span><span class="mk">O</span></div>
+          </div>
+          <div class="timebar-wrap"><div class="timebar" id="timebar"></div></div>
+
+          <div id="board" class="ttt-classic"></div>
+
+          <div class="surrender-row">
+            <button class="btn ghost" id="btn-surrender">🏳️ 認輸棄權</button>
+            <button class="btn ghost" id="btn-back-settings">⚙️ 回設定</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/common.js"></script>
+    <script src="js/tictactoe.js"></script>
+  </body>
+</html>

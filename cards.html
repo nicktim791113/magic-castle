@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>貝兒數字挑戰 · 魔法小皇宮</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="theme-color" content="#e0a800" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="魔法小皇宮" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌹</text></svg>"
+    />
+    <style>
+      body {
+        background: linear-gradient(180deg, #fff6e0 0%, #ffe9d6 55%, #ffe0ec 100%);
+      }
+      .card-wrap {
+        max-width: 480px;
+        margin: 0 auto;
+      }
+      .seg {
+        display: inline-flex;
+        background: rgba(255, 255, 255, 0.72);
+        border-radius: 14px;
+        padding: 4px;
+        gap: 4px;
+        box-shadow: var(--shadow);
+        flex-wrap: wrap;
+      }
+      .seg button {
+        font-family: var(--font-cute);
+        font-weight: 800;
+        font-size: 14px;
+        border: none;
+        background: transparent;
+        color: var(--ink);
+        padding: 9px 12px;
+        border-radius: 11px;
+        cursor: pointer;
+      }
+      .seg button.on {
+        background: linear-gradient(180deg, var(--gold), var(--gold-deep));
+        color: #7a4d00;
+      }
+      .rules {
+        background: #fffbe9;
+        border: 2px solid #ffe1a3;
+        border-radius: 18px;
+        padding: 16px 18px;
+        margin: 16px 0;
+        color: #8a6a2a;
+        line-height: 1.7;
+        font-weight: 600;
+      }
+      .rules b {
+        color: #c0392b;
+      }
+      .menu-center {
+        text-align: center;
+      }
+      /* 統計列 */
+      .statbar {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+      }
+      /* 撲克牌 */
+      .pcard {
+        width: 170px;
+        height: 234px;
+        margin: 4px auto 0;
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 12px 26px rgba(150, 90, 30, 0.28);
+        border: 1px solid #eee;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .pcard.ok {
+        animation: cardok 0.4s ease;
+        box-shadow: 0 0 0 5px #7bd88f, 0 12px 26px rgba(150, 90, 30, 0.28);
+      }
+      @keyframes cardok {
+        40% {
+          transform: scale(1.06);
+        }
+      }
+      .pcard .pip {
+        font-size: 86px;
+        line-height: 1;
+      }
+      .pcard .corner {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-weight: 900;
+        font-size: 26px;
+        line-height: 1;
+      }
+      .pcard .corner span:last-child {
+        font-size: 20px;
+        margin-top: -2px;
+      }
+      .pcard .corner.tl {
+        top: 12px;
+        left: 14px;
+      }
+      .pcard .corner.br {
+        bottom: 12px;
+        right: 14px;
+        transform: rotate(180deg);
+      }
+      /* 算式 */
+      .math {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        font-size: 30px;
+        font-weight: 900;
+        margin: 16px 0 8px;
+        color: #8a6a2a;
+      }
+      .math .q {
+        width: 54px;
+        height: 46px;
+        border-bottom: 4px solid var(--gold-deep);
+        color: #c0392b;
+        display: inline-flex;
+        align-items: flex-end;
+        justify-content: center;
+      }
+      #answer {
+        font-family: var(--font-cute);
+        font-weight: 900;
+        font-size: 30px;
+        width: 100%;
+        text-align: center;
+        padding: 12px;
+        border: 3px solid var(--gold);
+        border-radius: 16px;
+        background: #fffdf6;
+        color: #c0392b;
+        outline: none;
+        caret-color: var(--gold-deep);
+      }
+      /* 數字鍵盤 */
+      .numpad {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin: 14px 0;
+      }
+      .numpad button {
+        font-family: var(--font-cute);
+        font-weight: 900;
+        font-size: 26px;
+        padding: 16px 0;
+        border: none;
+        border-radius: 16px;
+        background: #fff;
+        color: #8a6a2a;
+        box-shadow: 0 4px 0 rgba(0, 0, 0, 0.1), var(--shadow);
+        cursor: pointer;
+      }
+      .numpad button:active {
+        transform: translateY(3px);
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+      }
+      .numpad button[data-k="ok"] {
+        background: linear-gradient(180deg, #a6ecb4, #3fbf5d);
+        color: #fff;
+      }
+      .numpad button[data-k="del"] {
+        background: linear-gradient(180deg, #ffd0d0, #ff8f8f);
+        color: #fff;
+      }
+      .hint-box {
+        display: none;
+        text-align: center;
+        background: #33334d;
+        color: #fff;
+        padding: 8px 14px;
+        border-radius: 999px;
+        font-weight: 700;
+        margin: 4px auto 0;
+        width: fit-content;
+      }
+      .center {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="topbar">
+        <a class="btn ghost btn-back" href="index.html">🏰 回城堡</a>
+        <h1>🌹 貝兒數字挑戰</h1>
+        <span id="sound-slot"></span>
+      </div>
+
+      <div class="card-wrap">
+        <!-- 選單 -->
+        <div id="menu" class="panel menu-center">
+          <p style="font-size: 17px; color: #8a6a2a; font-weight: 800; margin: 4px 0 14px">
+            選難度，挑戰把撲克牌點數全部加起來！🌹
+          </p>
+          <div class="seg" id="diff-seg" style="justify-content: center">
+            <button data-diff="easy" class="on">簡單 · 13 張（→91）</button>
+            <button data-diff="medium">普通 · 26 張（→182）</button>
+            <button data-diff="hard">困難 · 52 張（→364）</button>
+          </div>
+          <div class="rules">
+            🎴 我們會一張一張翻開撲克牌。<br />
+            ➕ 把這張牌的點數，加進目前的<b>總和</b>，輸入新的總和。<br />
+            🔢 <b>A=1</b>，數字就是它的點數，<b>J=11、Q=12、K=13</b>。<br />
+            🏆 全部加完，總和要正好等於目標數字！
+          </div>
+          <button class="btn gold" id="btn-start" style="font-size: 20px; padding: 14px 30px">
+            ▶ 開始挑戰
+          </button>
+        </div>
+
+        <!-- 遊戲 -->
+        <div id="game" class="panel" style="display: none">
+          <div class="statbar">
+            <span class="badge">🎴 <span id="progress">1 / 13</span></span>
+            <span class="badge">🎯 目標 <span id="target">91</span></span>
+            <span class="badge">⏱️ <span id="time">0分 00秒</span></span>
+          </div>
+
+          <div id="card" class="pcard"></div>
+
+          <div class="math">
+            <span id="sum">0</span>
+            <span style="color: var(--gold-deep)">+</span>
+            <span id="add">0</span>
+            <span style="color: var(--gold-deep)">=</span>
+            <span class="q">?</span>
+          </div>
+
+          <input id="answer" inputmode="none" placeholder="新總和" aria-label="輸入新總和" />
+
+          <div class="numpad">
+            <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button>
+            <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button>
+            <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button>
+            <button data-k="del">⌫</button><button data-k="0">0</button><button data-k="ok">✓</button>
+          </div>
+
+          <div class="center">
+            <button class="btn ghost" id="btn-hint" style="font-size: 14px; padding: 8px 16px">
+              💡 點數提示
+            </button>
+            <button class="btn ghost" id="btn-restart" style="font-size: 14px; padding: 8px 16px">
+              ♻️ 換難度
+            </button>
+            <div class="hint-box" id="hint">A=1，J=11，Q=12，K=13</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/common.js"></script>
+    <script src="js/cards.js"></script>
+  </body>
+</html>

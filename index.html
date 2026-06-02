@@ -27,12 +27,18 @@
       }
       .castle-grid {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap: 22px;
         margin: 26px auto 0;
-        max-width: 760px;
+        max-width: 1080px;
       }
-      @media (max-width: 560px) {
+      @media (max-width: 860px) {
+        .castle-grid {
+          grid-template-columns: repeat(2, 1fr);
+          max-width: 620px;
+        }
+      }
+      @media (max-width: 540px) {
         .castle-grid {
           grid-template-columns: 1fr;
           max-width: 380px;
@@ -72,6 +78,12 @@
       .card-rapunzel {
         background: linear-gradient(180deg, #e3d4ff 0%, #ffd9ef 100%);
       }
+      .card-belle {
+        background: linear-gradient(180deg, #fff0d6 0%, #ffe0e8 100%);
+      }
+      .card-mulan {
+        background: linear-gradient(180deg, #ffe6cf 0%, #ffd2d2 100%);
+      }
       .castle-card svg {
         width: 100%;
         height: auto;
@@ -106,6 +118,12 @@
       }
       .card-rapunzel .play-pill {
         color: #8a5cd0;
+      }
+      .card-belle .play-pill {
+        color: #d99a3a;
+      }
+      .card-mulan .play-pill {
+        color: #d23b3b;
       }
       .ribbon {
         position: absolute;
@@ -259,6 +277,67 @@
           </svg>
           <div class="game-name">迷宮闖關</div>
           <div class="game-region">🗼 長髮公主之塔</div>
+          <div class="play-pill">開始遊戲 ▶</div>
+        </a>
+
+        <!-- 美女與野獸：貝兒數字挑戰 -->
+        <a class="castle-card card-belle" href="cards.html">
+          <span class="ribbon" style="background: #d99a3a">算術</span>
+          <svg viewBox="0 0 200 200" aria-hidden="true">
+            <ellipse cx="100" cy="186" rx="118" ry="18" fill="#e6cda0" />
+            <!-- 側塔 -->
+            <rect x="44" y="92" width="30" height="90" fill="#efe1c0" />
+            <polygon points="40,92 78,92 59,52" fill="#d99a3a" />
+            <rect x="126" y="92" width="30" height="90" fill="#efe1c0" />
+            <polygon points="122,92 160,92 141,52" fill="#d99a3a" />
+            <!-- 主塔 -->
+            <rect x="80" y="64" width="40" height="118" fill="#f5ead0" />
+            <polygon points="74,64 126,64 100,26" fill="#e0a800" />
+            <!-- 玫瑰花窗 -->
+            <circle cx="100" cy="98" r="13" fill="#ffd0e0" stroke="#e0556b" stroke-width="2" />
+            <path d="M100 86 v24 M88 98 h24 M91 89 l18 18 M109 89 l-18 18" stroke="#e0556b" stroke-width="1.2" />
+            <!-- 城門 -->
+            <path d="M90 182 v-30 a10 10 0 0 1 20 0 v30 Z" fill="#9c5b2a" />
+            <!-- 旗 -->
+            <rect x="99" y="16" width="2" height="12" fill="#b9772a" />
+            <path d="M101 18 l12 4 -12 4 z" fill="#e0556b" />
+            <!-- 玫瑰與書 -->
+            <text x="148" y="180" font-size="26">🌹</text>
+            <text x="32" y="178" font-size="20">📖</text>
+          </svg>
+          <div class="game-name">貝兒數字挑戰</div>
+          <div class="game-region">🌹 美女與野獸城堡</div>
+          <div class="play-pill">開始遊戲 ▶</div>
+        </a>
+
+        <!-- 花木蘭：井字棋 -->
+        <a class="castle-card card-mulan" href="tictactoe.html">
+          <span class="ribbon" style="background: #d23b3b">井字棋</span>
+          <svg viewBox="0 0 200 200" aria-hidden="true">
+            <ellipse cx="100" cy="186" rx="116" ry="16" fill="#e8b48c" />
+            <!-- 下層 -->
+            <rect x="66" y="120" width="68" height="60" fill="#d23b3b" />
+            <rect x="72" y="120" width="6" height="60" fill="#a82a2a" />
+            <rect x="122" y="120" width="6" height="60" fill="#a82a2a" />
+            <path d="M90 180 v-30 a10 10 0 0 1 20 0 v30 Z" fill="#7a1f1f" />
+            <circle cx="104" cy="158" r="2.4" fill="#ffd24d" />
+            <!-- 下層屋頂 -->
+            <path d="M44 122 Q54 108 42 110 Q70 98 100 98 Q130 98 158 110 Q146 108 156 122 Q100 114 44 122 Z" fill="#e0a800" stroke="#b9772a" stroke-width="1" />
+            <!-- 上層 -->
+            <rect x="80" y="80" width="40" height="34" fill="#d23b3b" />
+            <rect x="90" y="88" width="20" height="16" rx="2" fill="#ffd24d" />
+            <!-- 上層屋頂 -->
+            <path d="M64 82 Q72 68 62 70 Q84 58 100 58 Q116 58 138 70 Q128 68 136 82 Q100 74 64 82 Z" fill="#e0a800" stroke="#b9772a" stroke-width="1" />
+            <!-- 寶頂 -->
+            <rect x="98" y="46" width="4" height="12" fill="#e0a800" />
+            <circle cx="100" cy="46" r="4" fill="#ffd24d" />
+            <!-- 燈籠與花 -->
+            <text x="30" y="150" font-size="20">🏮</text>
+            <text x="152" y="150" font-size="20">🏮</text>
+            <text x="150" y="116" font-size="16">🌸</text>
+          </svg>
+          <div class="game-name">花木蘭井字棋</div>
+          <div class="game-region">🏯 花木蘭宮殿</div>
           <div class="play-pill">開始遊戲 ▶</div>
         </a>
       </div>
