@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>迷宮闖關 · 魔法小皇宮</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="theme-color" content="#9b6dff" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="魔法小皇宮" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗼</text></svg>"
+    />
+    <style>
+      body {
+        background: linear-gradient(180deg, #e9defb 0%, #f3d9ef 55%, #ffe9f4 100%);
+      }
+      .controls {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .seg {
+        display: inline-flex;
+        background: rgba(255, 255, 255, 0.72);
+        border-radius: 14px;
+        padding: 4px;
+        gap: 4px;
+        box-shadow: var(--shadow);
+      }
+      .seg button {
+        font-family: var(--font-cute);
+        font-weight: 800;
+        font-size: 15px;
+        border: none;
+        background: transparent;
+        color: var(--ink);
+        padding: 9px 14px;
+        border-radius: 11px;
+        cursor: pointer;
+      }
+      .seg button.on {
+        background: linear-gradient(180deg, #b794ff, #9b6dff);
+        color: #fff;
+      }
+      .stats {
+        display: flex;
+        gap: 10px;
+        margin-left: auto;
+      }
+      .maze-prompt {
+        text-align: center;
+        font-size: clamp(17px, 3.2vw, 23px);
+        font-weight: 900;
+        color: #7a4bd0;
+        margin: 6px 0 12px;
+      }
+      .maze-area {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+      }
+      .maze-stage {
+        position: relative;
+        padding: 12px;
+        line-height: 0;
+      }
+      #maze {
+        width: min(86vw, 540px);
+        height: auto;
+        aspect-ratio: 1 / 1;
+        border-radius: 18px;
+        display: block;
+        touch-action: none;
+        background: #f4eeff;
+      }
+      .toast {
+        position: absolute;
+        left: 50%;
+        top: 18px;
+        transform: translateX(-50%);
+        background: rgba(120, 70, 160, 0.94);
+        color: #fff;
+        font-weight: 800;
+        padding: 10px 20px;
+        border-radius: 999px;
+        opacity: 0;
+        transition: opacity 0.2s;
+        pointer-events: none;
+        font-size: 16px;
+        white-space: nowrap;
+        line-height: 1.2;
+      }
+      .toast.show {
+        opacity: 1;
+      }
+      .dpad {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .dpad-row {
+        display: flex;
+        gap: 10px;
+      }
+      .dbtn {
+        width: 68px;
+        height: 68px;
+        border: none;
+        border-radius: 20px;
+        font-size: 30px;
+        font-weight: 900;
+        color: #fff;
+        background: linear-gradient(180deg, #b794ff, #9b6dff);
+        box-shadow: 0 5px 0 rgba(0, 0, 0, 0.12), var(--shadow);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+      .dbtn:active {
+        transform: translateY(4px);
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
+      }
+      /* 飄浮天燈 */
+      .lanterns {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        overflow: hidden;
+      }
+      .lantern {
+        position: absolute;
+        width: 14px;
+        height: 18px;
+        background: radial-gradient(circle at 50% 38%, #fff3b0, #ffae3b);
+        border-radius: 50% 50% 50% 50% / 42% 42% 58% 58%;
+        box-shadow: 0 0 16px 5px rgba(255, 180, 60, 0.5);
+        animation: floatUp ease-in-out infinite alternate;
+        opacity: 0.85;
+      }
+      @keyframes floatUp {
+        from {
+          transform: translateY(16px);
+        }
+        to {
+          transform: translateY(-24px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="topbar">
+        <a class="btn ghost btn-back" href="index.html">🏰 回城堡</a>
+        <h1>🗼 迷宮闖關</h1>
+        <span id="sound-slot"></span>
+      </div>
+
+      <div class="controls">
+        <div class="seg" id="theme-seg">
+          <button data-theme="animal" class="on">🐾 動物</button>
+          <button data-theme="letter">🔤 字母</button>
+          <button data-theme="shape">🔷 形狀</button>
+        </div>
+        <div class="seg" id="diff-seg">
+          <button data-diff="easy" class="on">簡單</button>
+          <button data-diff="medium">普通</button>
+          <button data-diff="hard">困難</button>
+        </div>
+        <button class="btn purple" id="btn-new">🔄 換迷宮</button>
+        <div class="stats">
+          <span class="badge">🏁 第 <span id="level">1</span> 關</span>
+          <span class="badge">👣 <span id="moves">0</span> 步</span>
+        </div>
+      </div>
+
+      <p class="maze-prompt" id="prompt"></p>
+
+      <div class="maze-area">
+        <div class="maze-stage panel">
+          <canvas id="maze"></canvas>
+          <div class="toast" id="toast"></div>
+        </div>
+        <div class="dpad" id="dpad">
+          <button class="dbtn" data-dir="n" aria-label="上">▲</button>
+          <div class="dpad-row">
+            <button class="dbtn" data-dir="w" aria-label="左">◀</button>
+            <button class="dbtn" data-dir="s" aria-label="下">▼</button>
+            <button class="dbtn" data-dir="e" aria-label="右">▶</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/common.js"></script>
+    <script>
+      // 飄浮天燈背景（長髮公主氛圍）
+      (function () {
+        var box = document.createElement("div");
+        box.className = "lanterns";
+        for (var i = 0; i < 9; i++) {
+          var l = document.createElement("div");
+          l.className = "lantern";
+          var s = 0.7 + Math.random() * 1.3;
+          l.style.left = Math.random() * 100 + "%";
+          l.style.top = Math.random() * 90 + "%";
+          l.style.transform = "scale(" + s + ")";
+          l.style.animationDuration = 3 + Math.random() * 3 + "s";
+          l.style.animationDelay = -Math.random() * 4 + "s";
+          box.appendChild(l);
+        }
+        document.body.insertBefore(box, document.body.firstChild);
+      })();
+    </script>
+    <script src="js/maze.js"></script>
+  </body>
+</html>
