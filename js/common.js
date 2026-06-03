@@ -352,4 +352,33 @@
       navigator.serviceWorker.register("./sw.js").catch(function () {});
     });
   }
+
+  /* ---------------- 鎖定縮放（避免小朋友誤觸放大畫面） ----------------
+     雙擊放大與雙指縮放主要交給 CSS 的 touch-action: pan-x pan-y 處理；
+     這裡再加上 iOS 手勢、雙指 touchmove 與桌機 Ctrl 縮放的攔截做雙保險。
+     刻意不攔「雙擊」，以免擋到數字鍵連按同一鍵（例如輸入 11）。 */
+  (function lockZoom() {
+    var vp = document.querySelector('meta[name="viewport"]');
+    if (vp)
+      vp.setAttribute(
+        "content",
+        "width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover"
+      );
+    ["gesturestart", "gesturechange", "gestureend"].forEach(function (ev) {
+      document.addEventListener(ev, function (e) { e.preventDefault(); }, { passive: false });
+    });
+    document.addEventListener(
+      "touchmove",
+      function (e) { if (e.touches && e.touches.length > 1) e.preventDefault(); },
+      { passive: false }
+    );
+    document.addEventListener(
+      "wheel",
+      function (e) { if (e.ctrlKey) e.preventDefault(); },
+      { passive: false }
+    );
+    document.addEventListener("keydown", function (e) {
+      if ((e.ctrlKey || e.metaKey) && ["+", "-", "=", "0"].indexOf(e.key) >= 0) e.preventDefault();
+    });
+  })();
 })();

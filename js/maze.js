@@ -286,17 +286,17 @@
     ctx.fillStyle = "#fff8ef"; ctx.fillRect(0, 0, SIZE, SIZE);
     // 虛線導引
     ctx.save();
-    ctx.setLineDash([8, 13]); ctx.lineWidth = 18; ctx.strokeStyle = "#e4d7f7"; ctx.lineCap = "round"; ctx.lineJoin = "round";
+    ctx.setLineDash([11, 15]); ctx.lineWidth = 32; ctx.strokeStyle = "#e4d7f7"; ctx.lineCap = "round"; ctx.lineJoin = "round";
     ctx.beginPath(); tracePts.forEach(function (p, i) { i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y); }); ctx.stroke();
     ctx.restore();
     // 小朋友的筆跡
-    if (traceStroke.length) drawGlowTrail(traceStroke, 9);
+    if (traceStroke.length) drawGlowTrail(traceStroke, 16);
     // 寶石
     gems.forEach(function (g, i) {
       ctx.beginPath();
-      if (g.got) { ctx.fillStyle = "#ffd24d"; ctx.arc(g.x, g.y, 13, 0, Math.PI * 2); ctx.fill(); }
+      if (g.got) { ctx.fillStyle = "#ffd24d"; ctx.arc(g.x, g.y, 17, 0, Math.PI * 2); ctx.fill(); }
       else {
-        ctx.fillStyle = "#fff"; ctx.arc(g.x, g.y, 13, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = "#fff"; ctx.arc(g.x, g.y, 17, 0, Math.PI * 2); ctx.fill();
         ctx.lineWidth = 3; ctx.strokeStyle = i === nextGem() ? "#ff5fa9" : "#cdbbef"; ctx.stroke();
       }
     });
@@ -310,7 +310,7 @@
     var i = nextGem();
     if (i >= gems.length) return;
     var g = gems[i];
-    if (Math.hypot(x - g.x, y - g.y) < 44) {
+    if (Math.hypot(x - g.x, y - g.y) < 58) {
       g.got = true; MLP.Sound.sparkle();
       if (nextGem() >= gems.length) traceWin();
     }

@@ -62,13 +62,14 @@
 
     // 場景背景
     sceneEl.className = "scene " + theme.bg;
-    sceneEl.innerHTML = decorFor(theme.bg);
+    sceneEl.innerHTML = sceneBg(theme.bg);
     var pts = placeN(count);
     pts.forEach(function (p) {
       var s = document.createElement("button");
       s.className = "obj";
       s.style.left = p.x + "%";
       s.style.top = p.y + "%";
+      s.style.animationDelay = (Math.random() * 3).toFixed(2) + "s";
       s.textContent = objEmoji;
       s.addEventListener("click", function () {
         if (s.classList.contains("counted")) return;
@@ -91,14 +92,53 @@
     });
   }
 
-  function decorFor(bg) {
-    if (bg === "ocean") return '<span class="decor" style="left:6%;bottom:4%">🌊</span><span class="decor" style="right:6%;bottom:4%">🌊</span>';
-    if (bg === "garden") return '<span class="decor" style="right:6%;top:6%">☀️</span>';
-    if (bg === "sky") return '<span class="decor" style="left:8%;top:8%">☁️</span><span class="decor" style="right:10%;bottom:10%">☁️</span>';
-    if (bg === "night") return '<span class="decor" style="right:8%;top:8%">🌙</span>';
-    if (bg === "orchard") return '<span class="decor" style="right:7%;top:7%">☀️</span>';
-    if (bg === "pond") return '<span class="decor" style="left:7%;bottom:6%">🌿</span>';
-    return "";
+  function sceneBg(bg) {
+    var s = "";
+    if (bg === "ocean") {
+      s =
+        '<defs><linearGradient id="bgg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9fe0ff"/><stop offset="1" stop-color="#1f6f9e"/></linearGradient></defs>' +
+        '<rect width="400" height="280" fill="url(#bgg)"/>' +
+        '<g fill="#ffffff" opacity="0.12"><polygon points="60,0 120,0 95,280 45,280"/><polygon points="210,0 255,0 235,280 185,280"/><polygon points="330,0 372,0 350,280 320,280"/></g>' +
+        '<path d="M0,250 Q100,234 200,250 T400,248 L400,280 L0,280 Z" fill="#f1dca6"/>' +
+        '<g fill="none" stroke="#3fae6a" stroke-width="10" stroke-linecap="round" opacity="0.85"><path d="M46,280 q-16,-34 4,-62 q-18,30 0,62"/><path d="M356,280 q16,-32 -4,-58 q18,28 0,58"/></g>' +
+        '<g fill="#ffffff" opacity="0.5"><circle cx="80" cy="64" r="6"/><circle cx="92" cy="42" r="4"/><circle cx="316" cy="84" r="7"/><circle cx="328" cy="58" r="4"/></g>';
+    } else if (bg === "garden") {
+      s =
+        '<defs><linearGradient id="bgg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bfe9ff"/><stop offset="1" stop-color="#e9f7ff"/></linearGradient></defs>' +
+        '<rect width="400" height="280" fill="url(#bgg)"/>' +
+        '<circle cx="344" cy="44" r="30" fill="#ffe27a"/><circle cx="344" cy="44" r="38" fill="#ffe27a" opacity="0.25"/>' +
+        '<g fill="#ffffff" opacity="0.92"><ellipse cx="84" cy="50" rx="34" ry="16"/><ellipse cx="114" cy="44" rx="24" ry="13"/></g>' +
+        '<path d="M0,176 Q120,138 240,176 T400,168 L400,280 L0,280 Z" fill="#94db78"/>' +
+        '<path d="M0,206 Q160,178 320,206 T400,202 L400,280 L0,280 Z" fill="#6dc857"/>';
+    } else if (bg === "sky") {
+      s =
+        '<defs><linearGradient id="bgg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bfe9ff"/><stop offset="1" stop-color="#eaf8ff"/></linearGradient></defs>' +
+        '<rect width="400" height="280" fill="url(#bgg)"/>' +
+        '<circle cx="56" cy="50" r="26" fill="#ffe27a"/>' +
+        '<g fill="#ffffff" opacity="0.95"><ellipse cx="150" cy="66" rx="42" ry="18"/><ellipse cx="190" cy="58" rx="28" ry="15"/><ellipse cx="300" cy="120" rx="46" ry="20"/><ellipse cx="342" cy="112" rx="30" ry="15"/></g>';
+    } else if (bg === "night") {
+      s =
+        '<defs><linearGradient id="bgg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#23234e"/><stop offset="1" stop-color="#43386f"/></linearGradient></defs>' +
+        '<rect width="400" height="280" fill="url(#bgg)"/>' +
+        '<circle cx="344" cy="48" r="26" fill="#fff3c0"/><circle cx="332" cy="42" r="22" fill="#23234e"/>' +
+        '<g fill="#ffffff" opacity="0.22"><ellipse cx="90" cy="58" rx="36" ry="13"/><ellipse cx="120" cy="52" rx="22" ry="11"/></g>';
+    } else if (bg === "orchard") {
+      s =
+        '<defs><linearGradient id="bgg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bfe9ff"/><stop offset="1" stop-color="#e9f7ff"/></linearGradient></defs>' +
+        '<rect width="400" height="280" fill="url(#bgg)"/>' +
+        '<circle cx="352" cy="44" r="24" fill="#ffe27a"/>' +
+        '<path d="M0,176 Q120,140 240,176 T400,168 L400,280 L0,280 Z" fill="#94db78"/>' +
+        '<path d="M0,208 Q160,182 320,208 T400,204 L400,280 L0,280 Z" fill="#6dc857"/>' +
+        '<rect x="40" y="150" width="16" height="86" rx="6" fill="#9c6b3f"/><ellipse cx="48" cy="138" rx="48" ry="40" fill="#5fb858"/><ellipse cx="24" cy="160" rx="30" ry="26" fill="#6dc857"/>';
+    } else if (bg === "pond") {
+      s =
+        '<defs><linearGradient id="bgg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bfeede"/><stop offset="1" stop-color="#3fa0bf"/></linearGradient></defs>' +
+        '<rect width="400" height="280" fill="url(#bgg)"/>' +
+        '<g fill="none" stroke="#ffffff" stroke-width="2" opacity="0.3"><ellipse cx="200" cy="150" rx="60" ry="20"/><ellipse cx="200" cy="150" rx="92" ry="30"/></g>' +
+        '<g fill="#5fbf7a" opacity="0.9"><ellipse cx="70" cy="222" rx="36" ry="13"/><ellipse cx="326" cy="240" rx="40" ry="14"/></g>' +
+        '<g fill="none" stroke="#3fae6a" stroke-width="7" stroke-linecap="round"><path d="M356,280 q8,-42 -2,-66"/><path d="M374,280 q-4,-36 6,-56"/></g>';
+    }
+    return '<svg class="scene-bg" viewBox="0 0 400 280" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">' + s + "</svg>";
   }
 
   function pick(n, btn) {

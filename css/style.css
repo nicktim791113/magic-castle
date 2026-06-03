@@ -22,6 +22,29 @@
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* 不顯示選取反白（避免拖曳時把圖案/文字「選起來」像在編輯文字） */
+::selection {
+  background: transparent;
+}
+::-moz-selection {
+  background: transparent;
+}
+/* 輸入框仍可正常輸入 */
+input,
+textarea {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* 防止整頁雙指縮放（仍可上下捲動），避免小朋友誤觸放大畫面 */
+html {
+  touch-action: pan-x pan-y;
 }
 
 html,
