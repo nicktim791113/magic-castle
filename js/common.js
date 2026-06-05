@@ -333,6 +333,43 @@
     mountSoundToggle: mountSoundToggle,
     celebrate: celebrate,
     wireClickSounds: wireClickSounds,
+    // 圖片元素：載入 assets 圖片，失敗就退回 emoji（漸進式美術升級）
+    iconEl: function (src, emoji, cls) {
+      var img = document.createElement("img");
+      img.src = src;
+      img.alt = "";
+      img.draggable = false;
+      img.className = "mlp-icon" + (cls ? " " + cls : "");
+      img.addEventListener("error", function () {
+        var sp = document.createElement("span");
+        sp.className = "mlp-emoji" + (cls ? " " + cls : "");
+        sp.textContent = emoji;
+        if (img.parentNode) img.parentNode.replaceChild(sp, img);
+      });
+      return img;
+    },
+    // 覆蓋式背景圖：載入成功就蓋住底圖，失敗就自我移除（露出 SVG fallback）
+    coverImg: function (src) {
+      var img = document.createElement("img");
+      img.src = src;
+      img.alt = "";
+      img.draggable = false;
+      img.className = "mlp-cover";
+      img.addEventListener("error", function () {
+        if (img.parentNode) img.parentNode.removeChild(img);
+      });
+      return img;
+    },
+    // 播放音效片段（mp3/wav），尊重靜音設定
+    playClip: function (src, vol) {
+      if (muted) return null;
+      try {
+        var a = new Audio(src);
+        a.volume = vol == null ? 0.95 : vol;
+        a.play().catch(function () {});
+        return a;
+      } catch (e) { return null; }
+    },
     shuffle: function (arr) {
       for (var i = arr.length - 1; i > 0; i--) {
         var j = (Math.random() * (i + 1)) | 0;

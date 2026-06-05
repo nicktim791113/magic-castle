@@ -7,12 +7,12 @@
   "use strict";
 
   var THEMES = [
-    { name: "海洋", bg: "ocean", objs: ["🐟", "🐠", "🐡"], q: "海裡有幾隻魚" },
-    { name: "花園", bg: "garden", objs: ["🌷", "🌸", "🌻"], q: "花園裡有幾朵花" },
-    { name: "天空", bg: "sky", objs: ["🦋", "🐦"], q: "天空中有幾隻" },
-    { name: "夜空", bg: "night", objs: ["⭐", "🌟"], q: "夜空有幾顆星星" },
-    { name: "果園", bg: "orchard", objs: ["🍎", "🍊"], q: "樹上有幾顆果子" },
-    { name: "池塘", bg: "pond", objs: ["🦆", "🐢"], q: "池塘裡有幾隻" },
+    { name: "海洋", bg: "ocean", obj: "🐟", oimg: "obj-fish", q: "海裡有幾隻魚" },
+    { name: "花園", bg: "garden", obj: "🌷", oimg: "obj-flower", q: "花園裡有幾朵花" },
+    { name: "天空", bg: "sky", obj: "🦋", oimg: "obj-butterfly", q: "天空中有幾隻蝴蝶" },
+    { name: "夜空", bg: "night", obj: "⭐", oimg: "obj-star", q: "夜空有幾顆星星" },
+    { name: "果園", bg: "orchard", obj: "🍎", oimg: "obj-apple", q: "樹上有幾顆蘋果" },
+    { name: "池塘", bg: "pond", obj: "🦆", oimg: "obj-duck", q: "池塘裡有幾隻鴨子" },
   ];
   var DIFFS = {
     easy: { min: 1, max: 5, choices: 3 },
@@ -21,7 +21,7 @@
   };
 
   var diff = "easy";
-  var theme, objEmoji, count, choices, score = 0, locked = false, counted = 0;
+  var theme, objEmoji, objImg, count, choices, score = 0, locked = false, counted = 0;
 
   var $ = function (id) { return document.getElementById(id); };
   var sceneEl = $("scene"), choicesEl = $("choices"), promptEl = $("prompt");
@@ -52,7 +52,7 @@
   function newRound() {
     locked = false; counted = 0;
     theme = THEMES[(Math.random() * THEMES.length) | 0];
-    objEmoji = theme.objs[(Math.random() * theme.objs.length) | 0];
+    objEmoji = theme.obj; objImg = theme.oimg;
     var d = DIFFS[diff];
     count = rand(d.min, d.max);
     choices = makeChoices(count, d, d.choices);
@@ -63,6 +63,7 @@
     // 場景背景
     sceneEl.className = "scene " + theme.bg;
     sceneEl.innerHTML = sceneBg(theme.bg);
+    sceneEl.appendChild(MLP.coverImg("assets/img/scene-" + theme.bg + ".png"));
     var pts = placeN(count);
     pts.forEach(function (p) {
       var s = document.createElement("button");
@@ -70,7 +71,7 @@
       s.style.left = p.x + "%";
       s.style.top = p.y + "%";
       s.style.animationDelay = (Math.random() * 3).toFixed(2) + "s";
-      s.textContent = objEmoji;
+      s.appendChild(MLP.iconEl("assets/img/" + objImg + ".png", objEmoji));
       s.addEventListener("click", function () {
         if (s.classList.contains("counted")) return;
         s.classList.add("counted");

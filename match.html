@@ -42,7 +42,7 @@
         border: none;
         background: transparent;
         color: var(--ink);
-        padding: 8px 14px;
+        padding: 9px 14px;
         border-radius: 11px;
         cursor: pointer;
       }
@@ -57,6 +57,7 @@
         margin: 4px 0 14px;
         font-size: 17px;
       }
+      /* 連連看 */
       .match-area {
         position: relative;
         max-width: 640px;
@@ -102,7 +103,13 @@
         transform: translateY(-3px);
       }
       .mcard .emj {
-        font-size: clamp(34px, 8vw, 50px);
+        width: clamp(42px, 10vw, 56px);
+        height: clamp(42px, 10vw, 56px);
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: clamp(34px, 8vw, 48px);
         line-height: 1;
       }
       .mcard .lbl {
@@ -142,13 +149,64 @@
         left: -10px;
       }
       @media (max-width: 560px) {
-        .match-area {
-          gap: 18px;
-        }
-        .mcard {
-          padding: 8px 6px;
-          gap: 6px;
-        }
+        .match-area { gap: 18px; }
+        .mcard { padding: 8px 6px; gap: 6px; }
+      }
+      /* 聲音配對 */
+      .sound-area {
+        max-width: 560px;
+        margin: 0 auto;
+        text-align: center;
+      }
+      .sound-play {
+        margin-bottom: 18px;
+      }
+      #btn-play-sound {
+        font-size: 22px;
+        padding: 18px 30px;
+      }
+      .sound-choices {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 16px;
+        max-width: 520px;
+        margin: 0 auto;
+      }
+      .schoice {
+        background: #fff;
+        border: 4px solid #fff;
+        border-radius: 22px;
+        padding: 14px 8px 10px;
+        cursor: pointer;
+        box-shadow: 0 6px 14px rgba(60, 110, 70, 0.18);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        transition: transform 0.1s;
+      }
+      .schoice:active { transform: scale(0.96); }
+      .schoice .emj.big {
+        width: clamp(56px, 16vw, 84px);
+        height: clamp(56px, 16vw, 84px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: clamp(48px, 14vw, 74px);
+        line-height: 1;
+      }
+      .schoice .snm {
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--ink);
+      }
+      .schoice.ok {
+        border-color: #5fd07a;
+        background: #eafff0;
+      }
+      .schoice.bad {
+        animation: shake 0.5s ease;
+        border-color: #ffb3b3;
       }
     </style>
   </head>
@@ -161,23 +219,39 @@
       </div>
 
       <div class="controls">
+        <div class="seg" id="mode-seg">
+          <button data-mode="match" class="on">🔗 連連看</button>
+          <button data-mode="sound">🔊 聲音配對</button>
+        </div>
         <div class="seg" id="diff-seg">
           <button data-diff="easy" class="on">簡單</button>
           <button data-diff="medium">普通</button>
           <button data-diff="hard">困難</button>
         </div>
         <button class="btn green" id="btn-restart">🔄 換一批</button>
-        <span class="badge" style="margin-left: auto"
+        <span class="badge" id="match-counter" style="margin-left: auto"
           >💚 <span id="done-count">0</span> / <span id="total-count">0</span></span
+        >
+        <span class="badge" id="sound-counter" style="margin-left: auto; display: none"
+          >⭐ 答對 <span id="sound-score">0</span> 題</span
         >
       </div>
 
-      <p class="hint">幫小動物找到牠喜歡吃的東西！先點動物，再點食物 🐾</p>
+      <p class="hint" id="prompt">幫小動物找到牠喜歡吃的東西！先點動物，再點食物 🐾</p>
 
+      <!-- 連連看 -->
       <div class="match-area" id="area">
         <svg class="lines" id="lines"></svg>
         <div class="col col-left" id="left"></div>
         <div class="col col-right" id="right"></div>
+      </div>
+
+      <!-- 聲音配對 -->
+      <div class="sound-area" id="sound-area" style="display: none">
+        <div class="sound-play">
+          <button class="btn purple" id="btn-play-sound">🔊 聽聽看是誰的聲音</button>
+        </div>
+        <div class="sound-choices" id="sound-choices"></div>
       </div>
     </div>
 

@@ -3,7 +3,7 @@
    策略：預先快取 App 殼層；之後用 stale-while-revalidate，
    先回快取（離線可玩），背景再更新，不需手動改版本就會自動更新。
    ============================================================ */
-const CACHE = "mlp-cache-v7";
+const CACHE = "mlp-cache-v8";
 
 const ASSETS = [
   "./",
@@ -30,7 +30,17 @@ const ASSETS = [
   "./icons/icon-maskable-192.png",
   "./icons/icon-maskable-512.png",
   "./icons/apple-touch-icon.png",
+  "./assets/sound/cat.wav",
+  "./assets/sound/dog.mp3",
+  "./assets/sound/cow.mp3",
+  "./assets/sound/duck.mp3",
+  "./assets/sound/rooster.mp3",
+  "./assets/sound/pig.mp3",
+  "./assets/sound/sheep.mp3",
 ];
+// 註：assets/img/ 的圖片由使用者用 ChatGPT 產生後再放入；
+// 因為一開始可能還不存在，不放進預先快取清單（會由 fetch 時自動快取），
+// 缺圖時程式會自動退回 emoji。
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -75,7 +85,7 @@ self.addEventListener("fetch", (event) => {
             }
             return res;
           })
-          .catch(() => cached || cache.match("./index.html"));
+          .catch(() => cached || (req.mode === "navigate" ? cache.match("./index.html") : Response.error()));
         // 先回快取（離線可玩），同時背景更新
         return cached || network;
       })

@@ -94,12 +94,17 @@
         position: absolute;
         z-index: 2;
         transform: translate(-50%, -50%);
+        width: clamp(40px, 9.5vw, 60px);
+        height: clamp(40px, 9.5vw, 60px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
         font-size: clamp(30px, 7.5vw, 50px);
         line-height: 1;
         background: none;
         border: none;
         cursor: pointer;
-        padding: 2px;
+        padding: 0;
         filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.3));
         animation: bob 3s ease-in-out infinite;
       }

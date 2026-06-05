@@ -100,6 +100,10 @@
         transform: rotateY(180deg);
         font-size: clamp(30px, 9vw, 56px);
       }
+      .card-front .mlp-icon {
+        width: 78%;
+        height: 78%;
+      }
       .card.sel .card-front,
       .card.sel .card-back {
         outline: 4px solid var(--gold);
@@ -146,6 +150,7 @@
           <button data-diff="easy" class="on">簡單</button>
           <button data-diff="medium">普通</button>
           <button data-diff="hard">困難</button>
+          <button data-diff="super">超難</button>
         </div>
         <button class="btn ice" id="btn-restart">🔄 重新開始</button>
         <div class="stats">

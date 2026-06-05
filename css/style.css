@@ -389,6 +389,24 @@ body {
   box-shadow: var(--shadow);
 }
 
+/* 圖片素材（assets/img）；缺圖時程式會自動退回 emoji */
+.mlp-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+.mlp-cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.001s !important;
