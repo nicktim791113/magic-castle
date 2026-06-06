@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      html, body { margin: 0; padding: 0; overflow: hidden; background: transparent; }
+      #stage { width: 100vw; height: 100vh; display: block; }
+      #stage svg { display: block; width: 100%; height: 100%; }
+    </style>
+  </head>
+  <body>
+    <div id="stage"></div>
+    <script src="artdata.js"></script>
+    <script>
+      function renderArt(name) {
+        var a = window.ART && window.ART[name];
+        document.getElementById("stage").innerHTML = a
+          ? '<svg viewBox="' + a.vb + '" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">' + a.svg + "</svg>"
+          : "";
+        return !!a;
+      }
+      window.renderArt = renderArt;
+      renderArt((location.hash || "").replace("#", ""));
+    </script>
+  </body>
+</html>
