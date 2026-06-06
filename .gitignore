@@ -14,3 +14,4 @@ desktop.ini
 
 # 大型修改前的本機備份（只存本機 + OneDrive，不上傳 GitHub）
 backups/
+.claude/
