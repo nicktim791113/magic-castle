@@ -146,9 +146,17 @@ body {
   margin: 0;
   font-size: clamp(22px, 4vw, 36px);
   flex: 1;
+  min-width: 0; /* 允許標題收縮，右側按鈕不會被擠出畫面 */
 }
 .topbar .spacer {
   flex: 1;
+}
+/* 返回鈕移到右上角：標題置左、返回鈕與音效鈕靠右（音效鈕維持最右角，與首頁一致） */
+.topbar .btn-back {
+  order: 1;
+}
+.topbar #sound-slot {
+  order: 2;
 }
 
 /* ---- 圓潤按鈕 ---- */
