@@ -379,6 +379,29 @@
       }
       return arr;
     },
+    /* ---- 偏好／紀錄儲存（記住難度、最佳成績）---- */
+    save: function (k, v) {
+      lsSet(k, v == null ? "" : String(v));
+    },
+    load: function (k, dft) {
+      var v = lsGet(k);
+      return v == null || v === "" ? dft : v;
+    },
+    loadNum: function (k, dft) {
+      var v = lsGet(k);
+      return v == null || v === "" ? dft : +v;
+    },
+    // 把某個 .seg 群組裡 data-<attr> 等於 value 的按鈕設為 .on（還原上次選擇）
+    selectSeg: function (container, attr, value) {
+      if (!container) return null;
+      var hit = null;
+      container.querySelectorAll("button").forEach(function (b) {
+        var on = b.getAttribute(attr) === value;
+        b.classList.toggle("on", on);
+        if (on) hit = b;
+      });
+      return hit;
+    },
   };
 
   /* ---------------- 註冊 Service Worker（PWA 離線／可安裝） ----------------

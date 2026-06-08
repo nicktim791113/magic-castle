@@ -24,13 +24,23 @@
     super: { pairs: 10, cols: 5 },
   };
 
-  var mode = "memory";
-  var diff = "easy";
+  var mode = MLP.load("mlp-mem-mode", "memory") === "visual" ? "visual" : "memory";
+  var diff = DIFFS[MLP.load("mlp-mem-diff", "easy")] ? MLP.load("mlp-mem-diff", "easy") : "easy";
 
   var board = document.getElementById("board");
   var movesEl = document.getElementById("moves");
   var timeEl = document.getElementById("time");
   var hintEl = document.getElementById("hint");
+
+  // 最佳步數徽章（依目前模式＋難度顯示）
+  var bestEl = document.createElement("span");
+  bestEl.className = "badge";
+  document.querySelector(".stats").appendChild(bestEl);
+  function bestKey() { return "mlp-mem-best-" + mode + "-" + diff; }
+  function renderBest() {
+    var b = MLP.loadNum(bestKey(), 0);
+    bestEl.textContent = b > 0 ? "🏅 最佳 " + b + " 步" : "🏅 最佳 —";
+  }
 
   var state = {
     first: null, lock: false, moves: 0, matched: 0, totalPairs: 0,
@@ -124,7 +134,11 @@
 
   function win() {
     stopTimer();
-    var msg = "你用了 " + state.moves + " 步、" + fmt(state.seconds) + " 完成！";
+    var prevBest = MLP.loadNum(bestKey(), 0);
+    var isNewBest = prevBest === 0 || state.moves < prevBest;
+    if (isNewBest) { MLP.save(bestKey(), state.moves); renderBest(); }
+    var msg = "你用了 " + state.moves + " 步、" + fmt(state.seconds) + " 完成！" +
+      (isNewBest ? " 🏅 創下最佳紀錄！" : "");
     setTimeout(function () {
       MLP.celebrate({
         emoji: "🏆", title: "全部消除囉！", text: msg,
@@ -138,11 +152,13 @@
 
   document.getElementById("mode-seg").addEventListener("click", function (e) {
     var b = e.target.closest("button"); if (!b) return;
-    mode = b.getAttribute("data-mode"); setSeg("mode-seg", b); newGame();
+    mode = b.getAttribute("data-mode"); setSeg("mode-seg", b);
+    MLP.save("mlp-mem-mode", mode); renderBest(); newGame();
   });
   document.getElementById("diff-seg").addEventListener("click", function (e) {
     var b = e.target.closest("button"); if (!b) return;
-    diff = b.getAttribute("data-diff"); setSeg("diff-seg", b); newGame();
+    diff = b.getAttribute("data-diff"); setSeg("diff-seg", b);
+    MLP.save("mlp-mem-diff", diff); renderBest(); newGame();
   });
   document.getElementById("btn-restart").addEventListener("click", newGame);
 
@@ -154,5 +170,8 @@
   MLP.buildSky({ clouds: 5, stars: 12 });
   MLP.mountSoundToggle(document.getElementById("sound-slot"));
   MLP.wireClickSounds();
+  MLP.selectSeg(document.getElementById("mode-seg"), "data-mode", mode);
+  MLP.selectSeg(document.getElementById("diff-seg"), "data-diff", diff);
+  renderBest();
   newGame();
 })();

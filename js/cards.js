@@ -16,7 +16,7 @@
   ];
   var DIFFS = { easy: 1, medium: 2, hard: 4 }; // 花色套數
 
-  var diff = "easy";
+  var diff = DIFFS[MLP.load("mlp-cards-diff", "easy")] ? MLP.load("mlp-cards-diff", "easy") : "easy";
   var deck = [], idx = 0, sum = 0, target = 91, playing = false;
   var startTime = 0, elapsed = 0, timer = null;
 
@@ -27,6 +27,16 @@
   function fmtTime(s) {
     var m = (s / 60) | 0, ss = s % 60;
     return m + "分 " + (ss < 10 ? "0" : "") + ss + "秒";
+  }
+
+  // 最佳時間（依難度），顯示在選單
+  var bestEl = document.createElement("div");
+  bestEl.style.cssText = "font-weight:800;color:#b8860b;margin:10px 0 0";
+  $("diff-seg").insertAdjacentElement("afterend", bestEl);
+  function bestKey() { return "mlp-cards-best-" + diff; }
+  function renderBest() {
+    var b = MLP.loadNum(bestKey(), 0);
+    bestEl.textContent = b > 0 ? "🏅 這個難度最快：" + fmtTime(b) : "🏅 還沒有紀錄，快來挑戰！";
   }
 
   function buildDeck(suitsCount) {
@@ -113,11 +123,15 @@
     playing = false;
     clearInterval(timer);
     var avg = (elapsed / deck.length).toFixed(1);
+    var prevBest = MLP.loadNum(bestKey(), 0);
+    var isNewBest = prevBest === 0 || elapsed < prevBest;
+    if (isNewBest) { MLP.save(bestKey(), elapsed); renderBest(); }
     setTimeout(function () {
       MLP.celebrate({
         emoji: "🌹",
         title: "挑戰成功！",
-        text: "總和正好是 " + target + "！用了 " + fmtTime(elapsed) + "（平均每張 " + avg + " 秒）",
+        text: "總和正好是 " + target + "！用了 " + fmtTime(elapsed) + "（平均每張 " + avg + " 秒）" +
+          (isNewBest ? "　🏅 最快紀錄！" : ""),
         actions: [
           { label: "再挑戰 🔄", cls: "gold", onClick: startGame },
           { label: "回城堡 🏰", cls: "ghost", onClick: function () { location.href = "index.html"; } },
@@ -157,6 +171,7 @@
     diff = b.getAttribute("data-diff");
     document.querySelectorAll("#diff-seg button").forEach(function (x) { x.classList.remove("on"); });
     b.classList.add("on");
+    MLP.save("mlp-cards-diff", diff); renderBest();
   });
   $("btn-start").addEventListener("click", startGame);
   $("btn-restart").addEventListener("click", function () {
@@ -170,4 +185,6 @@
   MLP.buildSky({ clouds: 4, stars: 8 });
   MLP.mountSoundToggle($("sound-slot"));
   MLP.wireClickSounds();
+  MLP.selectSeg($("diff-seg"), "data-diff", diff);
+  renderBest();
 })();

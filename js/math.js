@@ -20,13 +20,22 @@
     hard: { min: 1, max: 20, choices: 4 },
   };
 
-  var diff = "easy";
+  var diff = DIFFS[MLP.load("mlp-math-diff", "easy")] ? MLP.load("mlp-math-diff", "easy") : "easy";
   var theme, objEmoji, objImg, count, choices, score = 0, locked = false, counted = 0;
 
   var $ = function (id) { return document.getElementById(id); };
   var sceneEl = $("scene"), choicesEl = $("choices"), promptEl = $("prompt");
   var counterEl = $("counter"), scoreEl = $("score");
   var toastEl = $("toast");
+
+  // 最高答對題數徽章
+  var bestEl = document.createElement("span");
+  bestEl.className = "badge";
+  document.querySelector(".statrow").appendChild(bestEl);
+  function renderBest() {
+    var b = MLP.loadNum("mlp-math-best", 0);
+    bestEl.textContent = "🏅 最佳 " + b + " 題";
+  }
 
   function rand(min, max) { return min + ((Math.random() * (max - min + 1)) | 0); }
 
@@ -151,6 +160,7 @@
       MLP.sparkleAtEl(btn);
       score++;
       scoreEl.textContent = score;
+      if (score > MLP.loadNum("mlp-math-best", 0)) { MLP.save("mlp-math-best", score); renderBest(); }
       if (score % 5 === 0) { MLP.confetti(60); toast("好厲害！已經答對 " + score + " 題！🎉"); }
       setTimeout(newRound, 950);
     } else {
@@ -174,6 +184,7 @@
     diff = b.getAttribute("data-diff");
     document.querySelectorAll("#diff-seg button").forEach(function (x) { x.classList.remove("on"); });
     b.classList.add("on");
+    MLP.save("mlp-math-diff", diff);
     newRound();
   });
   $("btn-new").addEventListener("click", newRound);
@@ -192,5 +203,7 @@
   MLP.buildSky({ clouds: 3, stars: 8 });
   MLP.mountSoundToggle($("sound-slot"));
   MLP.wireClickSounds();
+  MLP.selectSeg($("diff-seg"), "data-diff", diff);
+  renderBest();
   newRound();
 })();

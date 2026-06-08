@@ -45,14 +45,23 @@
   var DIFFS_MATCH = { easy: 4, medium: 5, hard: 6 };
   var DIFFS_SOUND = { easy: 3, medium: 4, hard: 5 };
 
-  var mode = "match"; // match / sound
-  var diff = "easy";
+  var mode = MLP.load("mlp-match-mode", "match") === "sound" ? "sound" : "match"; // match / sound
+  var diff = DIFFS_MATCH[MLP.load("mlp-match-diff", "easy")] ? MLP.load("mlp-match-diff", "easy") : "easy";
 
   var $ = function (id) { return document.getElementById(id); };
   var area = $("area"), leftCol = $("left"), rightCol = $("right"), lines = $("lines");
   var doneCountEl = $("done-count"), totalCountEl = $("total-count");
   var soundArea = $("sound-area"), soundChoices = $("sound-choices");
   var scoreEl = $("sound-score"), promptEl = $("prompt");
+
+  // 聲音配對最高答對徽章（只在聲音模式顯示）
+  var bestEl = document.createElement("span");
+  bestEl.className = "badge";
+  bestEl.style.display = "none";
+  $("sound-counter").insertAdjacentElement("afterend", bestEl);
+  function renderSoundBest() {
+    bestEl.textContent = "🏅 最佳 " + MLP.loadNum("mlp-match-sound-best", 0) + " 題";
+  }
 
   var LINE_COLORS = ["#ff6fae", "#ffb44d", "#7bd88f", "#69b7ff", "#b794ff", "#ff9a5c"];
 
@@ -184,6 +193,7 @@
     if (an.key === sTarget.key) {
       sLock = true; btn.classList.add("ok"); MLP.Sound.correct(); MLP.sparkleAtEl(btn);
       sScore++; scoreEl.textContent = sScore;
+      if (sScore > MLP.loadNum("mlp-match-sound-best", 0)) { MLP.save("mlp-match-sound-best", sScore); renderSoundBest(); }
       if (sScore % 5 === 0) MLP.confetti(60);
       setTimeout(newSound, 950);
     } else {
@@ -199,16 +209,19 @@
     $("match-counter").style.display = sound ? "none" : "";
     soundArea.style.display = sound ? "" : "none";
     $("sound-counter").style.display = sound ? "" : "none";
-    if (sound) newSound(); else newMatch();
+    bestEl.style.display = sound ? "" : "none";
+    if (sound) { renderSoundBest(); newSound(); } else newMatch();
   }
 
   $("mode-seg").addEventListener("click", function (e) {
     var b = e.target.closest("button"); if (!b) return;
-    mode = b.getAttribute("data-mode"); setSeg("mode-seg", b); applyModeUI();
+    mode = b.getAttribute("data-mode"); setSeg("mode-seg", b);
+    MLP.save("mlp-match-mode", mode); applyModeUI();
   });
   $("diff-seg").addEventListener("click", function (e) {
     var b = e.target.closest("button"); if (!b) return;
     diff = b.getAttribute("data-diff"); setSeg("diff-seg", b);
+    MLP.save("mlp-match-diff", diff);
     if (mode === "sound") newSound(); else newMatch();
   });
   $("btn-restart").addEventListener("click", function () {
@@ -243,5 +256,7 @@
   MLP.buildSky({ clouds: 5, stars: 10 });
   MLP.mountSoundToggle($("sound-slot"));
   MLP.wireClickSounds();
+  MLP.selectSeg($("mode-seg"), "data-mode", mode);
+  MLP.selectSeg($("diff-seg"), "data-diff", diff);
   applyModeUI();
 })();

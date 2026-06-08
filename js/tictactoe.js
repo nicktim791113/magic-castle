@@ -12,8 +12,8 @@
   ];
 
   // 狀態
-  var mode = "classic";
-  var timeLimit = 5;
+  var mode = MLP.load("mlp-ttt-mode", "classic") === "ultimate" ? "ultimate" : "classic";
+  var timeLimit = [3, 5, 10, 15].indexOf(MLP.loadNum("mlp-ttt-time", 5)) >= 0 ? MLP.loadNum("mlp-ttt-time", 5) : 5;
   var status = "idle"; // idle / playing / ended
   var scores = { x: 0, o: 0, draw: 0 };
   var classicBoard = Array(9).fill(null);
@@ -259,6 +259,7 @@
     mode = b.getAttribute("data-mode");
     document.querySelectorAll("#mode-seg button").forEach(function (x) { x.classList.remove("on"); });
     b.classList.add("on");
+    MLP.save("mlp-ttt-mode", mode);
     $("mode-desc").textContent = mode === "classic" ? "純粹的速度與反應對決。" : "策略深度極高，每步棋都影響下一個戰場。";
   });
   $("time-seg").addEventListener("click", function (e) {
@@ -266,6 +267,7 @@
     timeLimit = +b.getAttribute("data-time");
     document.querySelectorAll("#time-seg button").forEach(function (x) { x.classList.remove("on"); });
     b.classList.add("on");
+    MLP.save("mlp-ttt-time", timeLimit);
   });
   $("btn-start").addEventListener("click", startGame);
   $("btn-surrender").addEventListener("click", handleSurrender);
@@ -288,6 +290,9 @@
   MLP.buildSky({ clouds: 4, stars: 8 });
   MLP.mountSoundToggle($("sound-slot"));
   MLP.wireClickSounds();
+  MLP.selectSeg($("mode-seg"), "data-mode", mode);
+  MLP.selectSeg($("time-seg"), "data-time", String(timeLimit));
+  $("mode-desc").textContent = mode === "classic" ? "純粹的速度與反應對決。" : "策略深度極高，每步棋都影響下一個戰場。";
   updateScoresUI();
   showSettings();
 })();

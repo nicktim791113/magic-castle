@@ -50,10 +50,12 @@
   var canvas = document.getElementById("maze");
   var ctx = canvas.getContext("2d");
 
-  var mode = "maze"; // maze / trace
-  var themeKey = "animal";
-  var diffKey = "easy";
-  var N = DIFFS.easy.N;
+  var savedTheme = MLP.load("mlp-maze-theme", "animal");
+  var savedDiff = MLP.load("mlp-maze-diff", "easy");
+  var themeKey = THEMES[savedTheme] ? savedTheme : "animal";
+  var diffKey = DIFFS[savedDiff] || savedDiff === "toddler" ? savedDiff : "easy";
+  var mode = diffKey === "toddler" ? "trace" : "maze"; // maze / trace
+  var N = DIFFS[diffKey] ? DIFFS[diffKey].N : DIFFS.easy.N;
   var cells = [], items = [];
   var player = { r: 0, c: 0 };
   var trailCells = [];
@@ -72,6 +74,15 @@
   var themeSeg = document.getElementById("theme-seg");
   var dpadEl = document.getElementById("dpad");
   var statsEl = document.getElementById("stats");
+
+  // 最佳關卡徽章（只在迷宮模式的 stats 列顯示；trace 模式整列會被隱藏）
+  var bestEl = document.createElement("span");
+  bestEl.className = "badge";
+  statsEl.appendChild(bestEl);
+  function renderBest() {
+    var b = MLP.loadNum("mlp-maze-best-level", 0);
+    bestEl.textContent = b > 0 ? "🏅 最佳 第 " + b + " 關" : "🏅 最佳 —";
+  }
 
   /* ---------------- 迷宮生成 ---------------- */
   var DIRS = [
@@ -227,6 +238,8 @@
   }
   function win() {
     won = true; MLP.sparkleAtEl(canvas);
+    if (level > MLP.loadNum("mlp-maze-best-level", 0)) MLP.save("mlp-maze-best-level", level);
+    renderBest();
     setTimeout(function () {
       MLP.celebrate({
         emoji: "🏁", title: "走到囉！",
@@ -393,12 +406,14 @@
   }
   document.getElementById("theme-seg").addEventListener("click", function (e) {
     var b = e.target.closest("button"); if (!b) return;
-    themeKey = b.getAttribute("data-theme"); setSeg("theme-seg", b); level = 1; newRound();
+    themeKey = b.getAttribute("data-theme"); setSeg("theme-seg", b);
+    MLP.save("mlp-maze-theme", themeKey); level = 1; newRound();
   });
   document.getElementById("diff-seg").addEventListener("click", function (e) {
     var b = e.target.closest("button"); if (!b) return;
     diffKey = b.getAttribute("data-diff");
     mode = diffKey === "toddler" ? "trace" : "maze";
+    MLP.save("mlp-maze-diff", diffKey);
     setSeg("diff-seg", b); applyModeUI(); level = 1; newRound();
   });
   document.getElementById("btn-new").addEventListener("click", function () {
@@ -437,6 +452,9 @@
   MLP.buildSky({ clouds: 4, stars: 10 });
   MLP.mountSoundToggle(document.getElementById("sound-slot"));
   MLP.wireClickSounds();
+  MLP.selectSeg(document.getElementById("theme-seg"), "data-theme", themeKey);
+  MLP.selectSeg(document.getElementById("diff-seg"), "data-diff", diffKey);
+  renderBest();
   setupCanvas();
   applyModeUI();
   newRound();
