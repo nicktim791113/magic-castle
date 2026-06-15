@@ -3,79 +3,114 @@
   <head>
     <meta charset="utf-8" />
     <style>
-      html,
-      body {
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-      }
-      svg {
-        display: block;
-        width: 100vw;
-        height: 100vh;
-      }
+      html, body { margin: 0; padding: 0; overflow: hidden; }
+      svg { display: block; width: 100vw; height: 100vh; }
     </style>
   </head>
   <body>
-    <!-- 用 #maskable 載入會把城堡縮小到安全區（用於 maskable 圖示） -->
-    <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#ff9ec7" />
-          <stop offset="0.5" stop-color="#b18cff" />
-          <stop offset="1" stop-color="#7cc6ff" />
-        </linearGradient>
-        <linearGradient id="roof" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#ffd76a" />
-          <stop offset="1" stop-color="#f2a93f" />
-        </linearGradient>
-      </defs>
-      <rect width="512" height="512" fill="url(#bg)" />
-      <!-- 星星裝飾 -->
-      <g fill="#ffffff">
-        <path d="M110 120 l7 18 18 7 -18 7 -7 18 -7 -18 -18 -7 18 -7z" opacity="0.95" />
-        <path d="M406 150 l5 13 13 5 -13 5 -5 13 -5 -13 -13 -5 13 -5z" opacity="0.85" />
-        <circle cx="384" cy="92" r="5" />
-        <circle cx="138" cy="372" r="4" />
-        <circle cx="430" cy="350" r="6" />
-      </g>
-      <g id="castle">
-        <!-- 雲朵底座 -->
-        <ellipse cx="256" cy="394" rx="152" ry="30" fill="#ffffff" opacity="0.92" />
-        <!-- 左塔 -->
-        <rect x="156" y="256" width="56" height="114" rx="4" fill="#fff7ef" />
-        <path d="M150 258 L218 258 L184 196 Z" fill="url(#roof)" />
-        <circle cx="184" cy="302" r="9" fill="#ffd76a" />
-        <!-- 右塔 -->
-        <rect x="300" y="256" width="56" height="114" rx="4" fill="#fff7ef" />
-        <path d="M294 258 L362 258 L328 196 Z" fill="url(#roof)" />
-        <circle cx="328" cy="302" r="9" fill="#ffd76a" />
-        <!-- 中央主塔 -->
-        <rect x="210" y="220" width="92" height="150" rx="4" fill="#fffaf3" />
-        <path d="M203 222 L309 222 L256 148 Z" fill="url(#roof)" />
-        <circle cx="256" cy="250" r="11" fill="#ffd76a" />
-        <!-- 城門 -->
-        <path d="M232 370 L232 314 a24 24 0 0 1 48 0 L280 370 Z" fill="#9b6dff" />
-        <circle cx="270" cy="340" r="3.2" fill="#ffe7a8" />
-        <!-- 旗子 -->
-        <rect x="253" y="116" width="5" height="36" rx="2" fill="#fff7ef" />
-        <path d="M258 121 L288 130 L258 139 Z" fill="#ff5fa9" />
-        <!-- 愛心 -->
-        <path
-          d="M256 408 c-7 -8 -22 -3 -22 9 c0 9 12 16 22 22 c10 -6 22 -13 22 -22 c0 -12 -15 -17 -22 -9 z"
-          fill="#ff5fa9"
-          opacity="0.9"
-        />
-      </g>
-    </svg>
+    <!-- 用 #maskable 載入會把皇宮縮到安全區（用於 maskable 圖示） -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffeef7"/>
+      <stop offset="1" stop-color="#ffd6ec"/>
+    </linearGradient>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffa6d3"/>
+      <stop offset="1" stop-color="#ff5fa9"/>
+    </linearGradient>
+    <linearGradient id="tower" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c5a6ff"/>
+      <stop offset="1" stop-color="#a87dff"/>
+    </linearGradient>
+    <linearGradient id="dome" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe79a"/>
+      <stop offset="1" stop-color="#ffce4d"/>
+    </linearGradient>
+    <linearGradient id="arch" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#aee0ff"/>
+      <stop offset="1" stop-color="#7cc6ff"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.42" r="0.6">
+      <stop offset="0" stop-color="#fff7fb" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#fff7fb" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- full-bleed background -->
+  <rect x="0" y="0" width="512" height="512" fill="url(#bg)"/>
+  <ellipse cx="256" cy="232" rx="210" ry="200" fill="url(#glow)"/><g id="content">
+
+  <!-- clouds -->
+  <g fill="#ffffff">
+    <ellipse cx="108" cy="150" rx="40" ry="24"/>
+    <ellipse cx="138" cy="138" rx="30" ry="22"/>
+    <ellipse cx="80" cy="158" rx="26" ry="18"/>
+    <ellipse cx="408" cy="178" rx="36" ry="22"/>
+    <ellipse cx="382" cy="168" rx="26" ry="18"/>
+    <ellipse cx="430" cy="186" rx="22" ry="15"/>
+  </g>
+
+  <!-- floating hearts -->
+  <g fill="#ff7ab8">
+    <path d="M120 250 c-9-12 -28-6 -28 8 c0 12 19 22 28 30 c9-8 28-18 28-30 c0-14 -19-20 -28-8 z"/>
+  </g>
+  <g fill="#b18cff">
+    <path d="M398 262 c-7-9 -21-4 -21 6 c0 9 14 17 21 23 c7-6 21-14 21-23 c0-10 -14-15 -21-6 z"/>
+  </g>
+
+  <!-- stars -->
+  <g fill="#ffd76a">
+    <path d="M168 110 l5 12 13 1 -10 9 3 13 -11-7 -11 7 3-13 -10-9 13-1 z"/>
+    <circle cx="356" cy="118" r="6"/>
+    <circle cx="300" cy="92" r="5"/>
+  </g>
+
+  <!-- ground mound -->
+  <ellipse cx="256" cy="452" rx="200" ry="46" fill="#ffc2e1"/>
+
+  <!-- ===== side towers ===== -->
+  <!-- left tower -->
+  <rect x="100" y="248" width="84" height="180" rx="34" fill="url(#tower)" stroke="#ffffff" stroke-width="9"/>
+  <path d="M96 248 c0-52 92-52 92 0 z" fill="#ff6fb0" stroke="#ffffff" stroke-width="9" stroke-linejoin="round"/>
+  <circle cx="142" cy="196" r="11" fill="url(#dome)" stroke="#ffffff" stroke-width="6"/>
+  <circle cx="142" cy="318" r="18" fill="url(#arch)" stroke="#ffffff" stroke-width="7"/>
+
+  <!-- right tower -->
+  <rect x="328" y="248" width="84" height="180" rx="34" fill="url(#tower)" stroke="#ffffff" stroke-width="9"/>
+  <path d="M324 248 c0-52 92-52 92 0 z" fill="#ff6fb0" stroke="#ffffff" stroke-width="9" stroke-linejoin="round"/>
+  <circle cx="370" cy="196" r="11" fill="url(#dome)" stroke="#ffffff" stroke-width="6"/>
+  <circle cx="370" cy="318" r="18" fill="url(#arch)" stroke="#ffffff" stroke-width="7"/>
+
+  <!-- ===== central keep (chunky body) ===== -->
+  <rect x="170" y="232" width="172" height="196" rx="40" fill="url(#wall)" stroke="#ffffff" stroke-width="10"/>
+
+  <!-- big round dome on center -->
+  <path d="M178 232 c0-104 156-104 156 0 z" fill="url(#dome)" stroke="#ffffff" stroke-width="10" stroke-linejoin="round"/>
+  <ellipse cx="222" cy="178" rx="20" ry="26" fill="#fff3c4" opacity="0.8"/>
+
+  <!-- dome top knob + flag -->
+  <circle cx="256" cy="118" r="13" fill="#ffce4d" stroke="#ffffff" stroke-width="6"/>
+  <path d="M256 105 l0-34" stroke="#ffffff" stroke-width="7" stroke-linecap="round"/>
+  <path d="M256 74 l34 9 -34 12 z" fill="#ff5fa9" stroke="#ffffff" stroke-width="5" stroke-linejoin="round"/>
+
+  <!-- big arched door -->
+  <path d="M222 428 v-58 a34 34 0 0 1 68 0 v58 z" fill="url(#arch)" stroke="#ffffff" stroke-width="9" stroke-linejoin="round"/>
+  <circle cx="278" cy="392" r="5" fill="#ffd76a"/>
+
+  <!-- side round windows on keep -->
+  <circle cx="210" cy="306" r="15" fill="url(#dome)" stroke="#ffffff" stroke-width="7"/>
+  <circle cx="302" cy="306" r="15" fill="url(#dome)" stroke="#ffffff" stroke-width="7"/>
+
+  <!-- blush cheeks (cute) -->
+  <g fill="#ff8fc7" opacity="0.75">
+    <ellipse cx="196" cy="356" rx="13" ry="9"/>
+    <ellipse cx="316" cy="356" rx="13" ry="9"/>
+  </g>
+</g></svg>
     <script>
       if (location.hash.indexOf("maskable") >= 0) {
-        document
-          .getElementById("castle")
-          .setAttribute(
-            "transform",
-            "translate(256,256) scale(0.76) translate(-256,-256)"
-          );
+        document.getElementById("content").setAttribute("transform", "translate(256,256) scale(0.8) translate(-256,-256)");
       }
     </script>
   </body>
