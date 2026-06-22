@@ -77,6 +77,8 @@
      模式①：連連看
      ============================================================ */
   var selected = null, matchedLinks = [], doneCount = 0, total = 0, lock = false;
+  var drag = null; // 拖曳連線狀態
+  var DRAG_THRESHOLD = 8;
 
   function makeCard(p, side) {
     var emoji = side === "left" ? p.a[0] : p.f[0];
@@ -91,62 +93,135 @@
     lbl.textContent = label;
     d.appendChild(iconBox(emoji, slug));
     d.appendChild(lbl);
-    d.addEventListener("click", function () { onCard(d, p.key, side); });
+    d.addEventListener("pointerdown", function (e) { onCardDown(d, p.key, side, e); });
     return d;
   }
 
   function newMatch() {
-    selected = null; matchedLinks = []; doneCount = 0; lock = false;
+    selected = null; drag = null; matchedLinks = []; doneCount = 0; lock = false;
     leftCol.innerHTML = ""; rightCol.innerHTML = ""; lines.innerHTML = "";
     var n = DIFFS_MATCH[diff];
     var chosen = MLP.shuffle(PAIRS.slice()).slice(0, n);
     total = chosen.length;
     doneCountEl.textContent = "0"; totalCountEl.textContent = total;
-    promptEl.textContent = "幫小動物找到牠喜歡吃的東西！先點動物，再點食物 🐾";
+    promptEl.textContent = "用手指把小動物連到牠愛吃的東西！拖一條線過去 🐾";
     var foods = MLP.shuffle(chosen.slice());
     chosen.forEach(function (p) { leftCol.appendChild(makeCard(p, "left")); });
     foods.forEach(function (p) { rightCol.appendChild(makeCard(p, "right")); });
   }
 
-  function onCard(el, key, side) {
-    if (lock || el.classList.contains("done")) return;
+  /* ---- 幾何與畫線 ---- */
+  function sizeLines() {
+    var ar = area.getBoundingClientRect();
+    lines.setAttribute("width", ar.width); lines.setAttribute("height", ar.height);
+    lines.setAttribute("viewBox", "0 0 " + ar.width + " " + ar.height);
+  }
+  function cardAnchor(el) {
+    var ar = area.getBoundingClientRect(), r = el.getBoundingClientRect();
+    var x = (el.getAttribute("data-side") === "left" ? r.right : r.left) - ar.left;
+    return { x: x, y: r.top + r.height / 2 - ar.top };
+  }
+  function pointerToArea(e) { var ar = area.getBoundingClientRect(); return { x: e.clientX - ar.left, y: e.clientY - ar.top }; }
+  function bezier(a, b, color, dashed) {
+    var mx = (a.x + b.x) / 2;
+    return '<path d="M' + a.x + " " + a.y + " C " + mx + " " + a.y + ", " + mx + " " + b.y + ", " + b.x + " " + b.y +
+      '" stroke="' + color + '" stroke-width="' + (dashed ? 6 : 5) + '" fill="none" stroke-linecap="round"' +
+      (dashed ? ' stroke-dasharray="2 12"' : "") + "/>";
+  }
+  function renderLines(liveStr) {
+    sizeLines();
+    var html = "";
+    matchedLinks.forEach(function (link) {
+      var a = cardAnchor(link.leftEl), b = cardAnchor(link.rightEl);
+      html += bezier(a, b, link.color, false);
+      html += '<circle cx="' + a.x + '" cy="' + a.y + '" r="5" fill="' + link.color + '"/><circle cx="' + b.x + '" cy="' + b.y + '" r="5" fill="' + link.color + '"/>';
+    });
+    if (liveStr) html += liveStr;
+    lines.innerHTML = html;
+  }
+  function drawLines() { renderLines(); } // resize 時重畫
+
+  /* ---- 配對結果 ---- */
+  function doMatch(leftEl, rightEl) {
+    leftEl.classList.add("done"); rightEl.classList.add("done");
+    leftEl.classList.remove("sel", "over"); rightEl.classList.remove("sel", "over");
+    var color = LINE_COLORS[doneCount % LINE_COLORS.length];
+    matchedLinks.push({ leftEl: leftEl, rightEl: rightEl, color: color });
+    MLP.Sound.correct(); MLP.sparkleAtEl(leftEl); MLP.sparkleAtEl(rightEl);
+    doneCount++; doneCountEl.textContent = doneCount;
+    renderLines();
+    if (doneCount === total) matchWin();
+  }
+  function doWrong(a, b) {
+    MLP.Sound.wrong();
+    a.classList.add("shake"); b.classList.add("shake");
+    setTimeout(function () { a.classList.remove("shake"); b.classList.remove("shake"); }, 550);
+  }
+  // 把兩張卡嘗試配對（任意先後／任意側）
+  function tryPair(elA, elB) {
+    if (!elA || !elB || elA === elB) return false;
+    if (elA.classList.contains("done") || elB.classList.contains("done")) return false;
+    if (elA.getAttribute("data-side") === elB.getAttribute("data-side")) return false;
+    var leftEl = elA.getAttribute("data-side") === "left" ? elA : elB;
+    var rightEl = leftEl === elA ? elB : elA;
+    if (leftEl.getAttribute("data-key") === rightEl.getAttribute("data-key")) { doMatch(leftEl, rightEl); return true; }
+    doWrong(elA, elB); return false;
+  }
+
+  /* ---- 指標：拖曳連線（主），無移動則退回點選兩下 ---- */
+  function cardUnder(cx, cy) { var el = document.elementFromPoint(cx, cy); return el ? el.closest(".mcard") : null; }
+  function clearOver() { area.querySelectorAll(".mcard.over").forEach(function (x) { x.classList.remove("over"); }); }
+
+  function onCardDown(el, key, side, e) {
+    if (el.classList.contains("done")) return;
+    deselect();
+    drag = { key: key, side: side, fromEl: el, anchor: cardAnchor(el), moved: false, x0: e.clientX, y0: e.clientY };
+    el.classList.add("sel");
+    try { el.setPointerCapture(e.pointerId); } catch (x) {}
+    e.preventDefault();
+  }
+  function onDocMove(e) {
+    if (!drag) return;
+    if (!drag.moved && Math.abs(e.clientX - drag.x0) + Math.abs(e.clientY - drag.y0) > DRAG_THRESHOLD) {
+      drag.moved = true; MLP.Sound.flip();
+    }
+    if (!drag.moved) return;
+    clearOver();
+    var t = cardUnder(e.clientX, e.clientY);
+    if (t && t !== drag.fromEl && t.getAttribute("data-side") !== drag.side && !t.classList.contains("done")) t.classList.add("over");
+    renderLines(bezier(drag.anchor, pointerToArea(e), "#ff9a3c", true));
+  }
+  function onDocUp(e) {
+    if (!drag) return;
+    var d = drag; drag = null;
+    clearOver();
+    if (d.moved) {
+      d.fromEl.classList.remove("sel");
+      var t = cardUnder(e.clientX, e.clientY);
+      renderLines();
+      tryPair(d.fromEl, t);
+    } else {
+      onTap(d.fromEl, d.key, d.side);
+    }
+  }
+
+  function onTap(el, key, side) {
+    if (el.classList.contains("done")) return;
     if (!selected) { select(el, key, side); MLP.Sound.flip(); return; }
     if (selected.el === el) { deselect(); return; }
     if (selected.side === side) { deselect(); select(el, key, side); MLP.Sound.flip(); return; }
-    lock = true;
-    if (selected.key === key) {
-      var leftEl = side === "left" ? el : selected.el;
-      var rightEl = side === "right" ? el : selected.el;
-      leftEl.classList.add("done"); rightEl.classList.add("done");
-      leftEl.classList.remove("sel"); rightEl.classList.remove("sel");
-      var color = LINE_COLORS[doneCount % LINE_COLORS.length];
-      matchedLinks.push({ leftEl: leftEl, rightEl: rightEl, color: color });
-      drawLines(); MLP.Sound.correct(); MLP.sparkleAtEl(el); MLP.sparkleAtEl(selected.el);
-      selected = null; doneCount++; doneCountEl.textContent = doneCount; lock = false;
-      if (doneCount === total) matchWin();
-    } else {
-      var a = selected.el, b = el;
-      MLP.Sound.wrong(); a.classList.add("shake"); b.classList.add("shake");
-      setTimeout(function () { a.classList.remove("shake", "sel"); b.classList.remove("shake"); selected = null; lock = false; }, 550);
-    }
+    var first = selected.el; deselect();
+    tryPair(first, el);
   }
   function select(el, key, side) { selected = { el: el, key: key, side: side }; el.classList.add("sel"); }
   function deselect() { if (selected) selected.el.classList.remove("sel"); selected = null; }
 
-  function drawLines() {
-    var ar = area.getBoundingClientRect();
-    lines.setAttribute("width", ar.width); lines.setAttribute("height", ar.height);
-    lines.setAttribute("viewBox", "0 0 " + ar.width + " " + ar.height);
-    var html = "";
-    matchedLinks.forEach(function (link) {
-      var lr = link.leftEl.getBoundingClientRect(), rr = link.rightEl.getBoundingClientRect();
-      var x1 = lr.right - ar.left, y1 = lr.top + lr.height / 2 - ar.top;
-      var x2 = rr.left - ar.left, y2 = rr.top + rr.height / 2 - ar.top, mx = (x1 + x2) / 2;
-      html += '<path d="M' + x1 + " " + y1 + " C " + mx + " " + y1 + ", " + mx + " " + y2 + ", " + x2 + " " + y2 + '" stroke="' + link.color + '" stroke-width="5" fill="none" stroke-linecap="round"/>';
-      html += '<circle cx="' + x1 + '" cy="' + y1 + '" r="5" fill="' + link.color + '"/><circle cx="' + x2 + '" cy="' + y2 + '" r="5" fill="' + link.color + '"/>';
-    });
-    lines.innerHTML = html;
-  }
+  document.addEventListener("pointermove", onDocMove);
+  document.addEventListener("pointerup", onDocUp);
+  document.addEventListener("pointercancel", function () {
+    if (!drag) return;
+    drag.fromEl.classList.remove("sel"); drag = null; clearOver(); renderLines();
+  });
 
   function matchWin() {
     setTimeout(function () {
@@ -250,6 +325,13 @@
       }
       return false;
     },
+    // 測試用：直接把某 key 的左右卡連起來（驗證連線邏輯）
+    connect: function (key) {
+      var l = leftCol.querySelector('.mcard[data-key="' + key + '"]');
+      var r = rightCol.querySelector('.mcard[data-key="' + key + '"]');
+      return tryPair(l, r);
+    },
+    linkCount: function () { return matchedLinks.length; },
   };
 
   /* ---------- 啟動 ---------- */

@@ -94,6 +94,7 @@
         box-shadow: 0 6px 14px rgba(60, 110, 70, 0.18);
         transition: transform 0.1s, border-color 0.1s, background 0.2s;
         position: relative;
+        touch-action: none; /* 讓手指可直接在卡片上拖曳連線，不會捲動頁面 */
       }
       .col-right .mcard {
         flex-direction: row-reverse;
@@ -121,6 +122,11 @@
         border-color: var(--gold);
         background: #fffbe8;
         transform: scale(1.04);
+      }
+      .mcard.over {
+        border-color: #ff8fc7;
+        background: #fff0f7;
+        transform: scale(1.06);
       }
       .mcard.done {
         border-color: #5fd07a;
