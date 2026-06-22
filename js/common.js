@@ -370,6 +370,19 @@
         return a;
       } catch (e) { return null; }
     },
+    // 念出文字（顏色／數字／字母／動物名）；尊重靜音，無語音支援就靜默略過
+    speak: function (text, lang) {
+      if (muted || !text) return;
+      try {
+        if (!("speechSynthesis" in window)) return;
+        var u = new SpeechSynthesisUtterance(String(text));
+        u.lang = lang || "zh-TW";
+        u.rate = 0.95;
+        u.pitch = 1.15;
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(u);
+      } catch (e) {}
+    },
     shuffle: function (arr) {
       for (var i = arr.length - 1; i > 0; i--) {
         var j = (Math.random() * (i + 1)) | 0;

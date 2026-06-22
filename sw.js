@@ -3,7 +3,7 @@
    策略：預先快取 App 殼層；之後用 stale-while-revalidate，
    先回快取（離線可玩），背景再更新，不需手動改版本就會自動更新。
    ============================================================ */
-const CACHE = "mlp-cache-v17";
+const CACHE = "mlp-cache-v18";
 
 const ASSETS = [
   "./",
@@ -15,6 +15,7 @@ const ASSETS = [
   "./cards.html",
   "./tictactoe.html",
   "./math.html",
+  "./archery.html",
   "./css/style.css",
   "./js/common.js",
   "./js/dressup.js",
@@ -24,6 +25,7 @@ const ASSETS = [
   "./js/cards.js",
   "./js/tictactoe.js",
   "./js/math.js",
+  "./js/archery.js",
   "./manifest.webmanifest",
   "./icons/icon-192.png",
   "./icons/icon-512.png",

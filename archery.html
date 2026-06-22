@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>射箭樂園 · 魔法小皇宮</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="theme-color" content="#ff7ac0" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="魔法小皇宮" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏹</text></svg>"
+    />
+    <style>
+      body {
+        background: linear-gradient(180deg, #d8f0ff 0%, #e9f7ff 50%, #eafff0 100%);
+      }
+      .controls {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 8px;
+      }
+      .seg {
+        display: inline-flex;
+        background: rgba(255, 255, 255, 0.72);
+        border-radius: 14px;
+        padding: 4px;
+        gap: 4px;
+        box-shadow: var(--shadow);
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .seg button {
+        font-family: var(--font-cute);
+        font-weight: 800;
+        font-size: 15px;
+        border: none;
+        background: transparent;
+        color: var(--ink);
+        padding: 9px 13px;
+        border-radius: 11px;
+        cursor: pointer;
+      }
+      .seg button.on {
+        background: linear-gradient(180deg, #ffd76a, #f2a93f);
+        color: #6a3d00;
+      }
+      .arch-prompt {
+        text-align: center;
+        font-size: clamp(18px, 4vw, 24px);
+        font-weight: 900;
+        color: #4a3a1a;
+        margin: 6px auto 8px;
+        min-height: 30px;
+      }
+      .statrow {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+      }
+      .stage-wrap {
+        position: relative;
+        width: min(480px, 94vw);
+        margin: 0 auto;
+      }
+      #stage {
+        width: 100%;
+        aspect-ratio: 480 / 520;
+        display: block;
+        border-radius: 22px;
+        box-shadow: var(--shadow);
+        touch-action: none;
+        cursor: crosshair;
+        background: #d8f0ff;
+      }
+      .toast {
+        position: absolute;
+        left: 50%;
+        top: 14px;
+        transform: translateX(-50%);
+        background: rgba(60, 40, 90, 0.86);
+        color: #fff;
+        font-weight: 800;
+        padding: 10px 18px;
+        border-radius: 999px;
+        font-size: 15px;
+        opacity: 0;
+        transition: opacity 0.2s;
+        pointer-events: none;
+        white-space: nowrap;
+        z-index: 5;
+      }
+      .toast.show { opacity: 1; }
+      .arch-tip {
+        text-align: center;
+        color: #7a6a4a;
+        font-size: 14px;
+        margin: 10px 0 0;
+        font-weight: 700;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="topbar">
+        <a class="btn ghost btn-back" href="index.html">🏰 回城堡</a>
+        <h1>🏹 射箭樂園</h1>
+        <span id="sound-slot"></span>
+      </div>
+
+      <div class="controls">
+        <div class="seg" id="cat-seg">
+          <button data-cat="color" class="on">🎨 顏色</button>
+          <button data-cat="letter">🔤 英文</button>
+          <button data-cat="number">🔢 數字</button>
+          <button data-cat="animal">🐾 動物</button>
+        </div>
+        <div class="seg" id="diff-seg">
+          <button data-diff="easy" class="on">簡單</button>
+          <button data-diff="medium">中等 · 會動</button>
+          <button data-diff="hard">困難</button>
+        </div>
+        <button class="btn gold" id="btn-skip" style="font-size: 15px; padding: 9px 16px">🔄 換一題</button>
+      </div>
+
+      <p class="arch-prompt" id="prompt"></p>
+      <div class="statrow">
+        <span class="badge">🎯 命中 <span id="score">0</span></span>
+        <span class="badge" id="best">🏅 最佳 0</span>
+      </div>
+
+      <div class="stage-wrap">
+        <canvas id="stage"></canvas>
+        <div class="toast" id="toast"></div>
+      </div>
+
+      <p class="arch-tip">按住畫面瞄準遠方的靶，放開就射箭！射中正確答案得分 🎯</p>
+    </div>
+
+    <script src="js/common.js"></script>
+    <script src="js/archery.js"></script>
+  </body>
+</html>

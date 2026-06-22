@@ -87,6 +87,12 @@
       .card-mermaid {
         background: linear-gradient(180deg, #c4f3ec 0%, #a8e0f5 100%);
       }
+      .card-archery {
+        background: linear-gradient(180deg, #d6f3d8 0%, #bfeede 100%);
+      }
+      .card-racing {
+        background: linear-gradient(180deg, #ffe0d6 0%, #ffd0e0 100%);
+      }
       .castle-card svg {
         width: 100%;
         height: auto;
@@ -130,6 +136,12 @@
       }
       .card-mermaid .play-pill {
         color: #2a9fc0;
+      }
+      .card-archery .play-pill {
+        color: #2f9e6e;
+      }
+      .card-racing .play-pill {
+        color: #e0556b;
       }
       .ribbon {
         position: absolute;
@@ -381,6 +393,32 @@
           </svg>
           <div class="game-name">數數樂園</div>
           <div class="game-region">🧜‍♀️ 美人魚海底城堡</div>
+          <div class="play-pill">開始遊戲 ▶</div>
+        </a>
+
+        <!-- 勇敢傳說：射箭 -->
+        <a class="castle-card card-archery" href="archery.html">
+          <span class="ribbon" style="background: #2f9e6e">射箭</span>
+          <svg viewBox="0 0 200 200" aria-hidden="true">
+            <ellipse cx="100" cy="186" rx="116" ry="16" fill="#bfe6a8" />
+            <!-- 靶 -->
+            <circle cx="126" cy="96" r="52" fill="#fff" stroke="#e0556b" stroke-width="14" />
+            <circle cx="126" cy="96" r="30" fill="#fff" stroke="#ffce4d" stroke-width="11" />
+            <circle cx="126" cy="96" r="9" fill="#e0556b" />
+            <!-- 立架 -->
+            <rect x="120" y="146" width="12" height="40" rx="4" fill="#9c6b3f" />
+            <!-- 弓 -->
+            <path d="M58 52 Q24 96 58 140" fill="none" stroke="#7a4a28" stroke-width="9" stroke-linecap="round" />
+            <path d="M58 52 L58 140" stroke="#fff" stroke-width="3" />
+            <!-- 箭 -->
+            <line x1="40" y1="96" x2="118" y2="96" stroke="#6b4a2e" stroke-width="5" stroke-linecap="round" />
+            <path d="M120 96 l-12 -7 l0 14 z" fill="#e8453c" />
+            <path d="M40 96 l10 -6 M40 96 l10 6" stroke="#ff8fc7" stroke-width="3" stroke-linecap="round" />
+            <!-- 星星 -->
+            <text x="158" y="48" font-size="18">✨</text>
+          </svg>
+          <div class="game-name">射箭樂園</div>
+          <div class="game-region">🏹 勇敢傳說箭術場</div>
           <div class="play-pill">開始遊戲 ▶</div>
         </a>
       </div>
